@@ -29,6 +29,8 @@ export const useEvent = () =>
     staleTime: 60_000,
   });
 
+// Postgrest builder generics are too deep to name here.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useEventChildren = <T,>(table: string, fallback: T[], order: [string, boolean][], extra?: (q: any) => any) => {
   const { data: event } = useEvent();
   const eventId = event?.id;

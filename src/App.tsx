@@ -1,62 +1,53 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Index from "./pages/Index";
-import Problems from "./pages/Problems";
-import Schedule from "./pages/Schedule";
-import Venue from "./pages/Venue";
-import Register from "./pages/Register";
-import ThankYou from "./pages/ThankYou";
-import Submit from "./pages/Submit";
-import Judges from "./pages/Judges";
-import JudgingCriteria from "./pages/JudgingCriteria";
-import FAQ from "./pages/FAQ";
-import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
-import Admin from "./pages/Admin";
-import ScrollToTop from "@/components/ScrollToTop";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
+import SiteLayout from "@/components/site/SiteLayout";
+import Home from "@/pages/public/Home";
+import Register from "@/pages/public/Register";
+import NotFound from "@/pages/public/NotFound";
 
-const queryClient = new QueryClient();
+// The operator console is its own bundle; public visitors never download it.
+const OpsLayout = lazy(() => import("@/pages/ops/OpsLayout"));
+const OpsTeams = lazy(() => import("@/pages/ops/Teams"));
+const OpsTeamDetail = lazy(() => import("@/pages/ops/TeamDetail"));
+const OpsCheckIn = lazy(() => import("@/pages/ops/CheckIn"));
+const OpsEvent = lazy(() => import("@/pages/ops/EventSettings"));
+const OpsContent = lazy(() => import("@/pages/ops/Content"));
+const OpsOperators = lazy(() => import("@/pages/ops/Operators"));
 
-const AppRoutes = () => {
-  const location = useLocation();
-  const showFooter = location.pathname !== "/admin";
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } });
 
-  return (
-    <>
-      <ScrollToTop />
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/problems" element={<Problems />} />
-        <Route path="/schedule" element={<Schedule />} />
-        <Route path="/venue" element={<Venue />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/submit" element={<Submit />} />
-        <Route path="/judges" element={<Judges />} />
-        <Route path="/judging-criteria" element={<JudgingCriteria />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      {showFooter && <Footer />}
-    </>
-  );
-};
+const OpsFallback = () => (
+  <div className="grid min-h-screen place-items-center bg-void font-mono text-xs uppercase tracking-kicker text-dim">
+    booting console<span className="animate-blink">_</span>
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Sonner />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </TooltipProvider>
+    <BrowserRouter>
+      <Toaster theme="dark" position="bottom-right" toastOptions={{ className: "!bg-deck !border-line !text-ink" }} />
+      <Suspense fallback={<OpsFallback />}>
+        <Routes>
+          <Route element={<SiteLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+          <Route path="/ops" element={<OpsLayout />}>
+            <Route index element={<Navigate to="teams" replace />} />
+            <Route path="teams" element={<OpsTeams />} />
+            <Route path="teams/:teamId" element={<OpsTeamDetail />} />
+            <Route path="check-in" element={<OpsCheckIn />} />
+            <Route path="event" element={<OpsEvent />} />
+            <Route path="content" element={<OpsContent />} />
+            <Route path="operators" element={<OpsOperators />} />
+          </Route>
+          <Route path="/admin" element={<Navigate to="/ops" replace />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 

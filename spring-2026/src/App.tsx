@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
+import ArchiveBanner from "@/components/ArchiveBanner";
 import Footer from "@/components/Footer";
 import Index from "./pages/Index";
 import Problems from "./pages/Problems";
@@ -28,6 +29,7 @@ const AppRoutes = () => {
   return (
     <>
       <ScrollToTop />
+      <ArchiveBanner />
       <Navbar />
       <Routes>
         <Route path="/" element={<Index />} />

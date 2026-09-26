@@ -1,12 +1,12 @@
-import { ArrowRight, ArrowUpRight, CalendarPlus, Megaphone, Sparkles, Trophy, Users, Zap } from "lucide-react";
+import { ArrowRight, CalendarPlus, Megaphone, Sparkles, Trophy, Users, Zap } from "lucide-react";
 import { Badge, ButtonLink, GradientText, IconTile, Kicker, Panel, SectionTitle } from "@/components/ui";
 import { Countdown } from "@/components/site/Countdown";
 import { EventFacts } from "@/components/site/EventFacts";
 import { HeroDisplay } from "@/components/site/HeroDisplay";
 import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
+import { PastHackathons } from "@/components/site/PastHackathons";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
-import { ARCHIVE_URL } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 /** Google Calendar "render" template URL built from the event's start/end times. */
@@ -196,19 +196,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------- Archive */}
-      <section className="container py-16 sm:py-24">
-        <Panel className="flex flex-col items-start justify-between gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
-          <div>
-            <p className="kicker text-dim">Looking back</p>
-            <p className="mt-2 font-display text-xl font-bold text-ink sm:text-2xl">Curious about the last hackathon?</p>
-          </div>
-          <a href={ARCHIVE_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.14em] text-signal hover:underline">
-            See Spring 2026
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-        </Panel>
-      </section>
+      {/* ------------------------------------------------------ Past hackathons */}
+      <PastHackathons event={event} />
 
       {/* ------------------------------------------------------------- Final CTA */}
       <section className="container pb-24 pt-4 sm:pb-32">

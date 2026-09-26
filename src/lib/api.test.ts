@@ -20,6 +20,13 @@ describe("seed fallbacks", () => {
     expect(withCurrentHours(seededEvent).starts_at).toBe(DEFAULT_EVENT.starts_at);
   });
 
+  it("swaps the seeded tagline and keeps an edited one", () => {
+    const seeded = { ...seededEvent, tagline: "A one-day youth hackathon building tech for Miami." };
+    expect(withCurrentHours(seeded).tagline).toBe(DEFAULT_EVENT.tagline);
+    const edited = { ...seededEvent, starts_at: "2026-10-25T14:00:00+00:00", tagline: "Our own line" };
+    expect(withCurrentHours(edited).tagline).toBe("Our own line");
+  });
+
   it("keeps a start time an operator set", () => {
     const edited = { ...seededEvent, starts_at: "2026-10-25T14:00:00+00:00" };
     expect(withCurrentHours(edited)).toBe(edited);

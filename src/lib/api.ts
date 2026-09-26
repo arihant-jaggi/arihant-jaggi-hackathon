@@ -22,11 +22,16 @@ import type {
 // Anything an operator has changed no longer matches and is shown as stored.
 const SEEDED_START = new Date("2026-10-25T09:00:00-04:00").getTime();
 const SEEDED_TIMES = "9:00 AM to 5:30 PM";
+const SEEDED_TAGLINE = "A one-day youth hackathon building tech for Miami.";
 
-export const withCurrentHours = (event: EventRow): EventRow =>
-  event.starts_at && new Date(event.starts_at).getTime() === SEEDED_START
-    ? { ...event, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at }
-    : event;
+export const withCurrentHours = (event: EventRow): EventRow => {
+  let out = event;
+  if (event.starts_at && new Date(event.starts_at).getTime() === SEEDED_START) {
+    out = { ...out, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at };
+  }
+  if (event.tagline === SEEDED_TAGLINE) out = { ...out, tagline: DEFAULT_EVENT.tagline };
+  return out;
+};
 
 export const withCurrentSchedule = (rows: ScheduleItemRow[]): ScheduleItemRow[] =>
   rows.length === 1 && rows[0].title === "Hack day" && new Date(rows[0].starts_at).getTime() === SEEDED_START

@@ -8,7 +8,7 @@ export const DEFAULT_EVENT: EventRow = {
   slug: EVENT_SLUG,
   name: "Impact Miami",
   edition: "2.0",
-  tagline: "A one-day youth hackathon building tech for Miami.",
+  tagline: "Build AI agents that work for Miami — in one day.",
   description:
     "Young Coders Initiative presents Impact Miami 2.0 — a one-day hackathon where student teams design, build, and pitch projects that make a real difference for Miami communities.",
   starts_at: "2026-10-25T09:30:00-04:00",

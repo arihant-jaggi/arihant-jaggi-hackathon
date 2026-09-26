@@ -7,7 +7,8 @@ alter table public.schedule_items add column if not exists highlight text;
 
 update public.events
 set starts_at = '2026-10-25 09:30:00-04',
-    ends_at   = '2026-10-25 17:30:00-04'
+    ends_at   = '2026-10-25 17:30:00-04',
+    tagline   = 'Build AI agents that work for Miami — in one day.'
 where slug = 'impact-miami-2';
 
 delete from public.schedule_items

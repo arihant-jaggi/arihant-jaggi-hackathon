@@ -128,10 +128,10 @@ const Teams = () => {
       header: "Members",
       render: (t) => <span className="tabular-nums">{t.team_members?.length ?? 0}</span>,
     },
-    { key: "school", header: "School", render: (t) => t.school || "—" },
-    { key: "track", header: "Track", render: (t) => (t.track_id ? trackTitle.get(t.track_id) ?? "—" : "—") },
+    { key: "school", header: "School", render: (t) => t.school || "-" },
+    { key: "track", header: "Track", render: (t) => (t.track_id ? trackTitle.get(t.track_id) ?? "-" : "-") },
     { key: "status", header: "Status", render: (t) => <StatusBadge status={t.status} /> },
-    { key: "table", header: "Table", render: (t) => t.table_number || "—" },
+    { key: "table", header: "Table", render: (t) => t.table_number || "-" },
     {
       key: "checked_in",
       header: "Checked in",

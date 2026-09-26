@@ -8,7 +8,7 @@ alter table public.schedule_items add column if not exists highlight text;
 update public.events
 set starts_at = '2026-10-25 09:30:00-04',
     ends_at   = '2026-10-25 17:30:00-04',
-    tagline   = 'Build AI agents that work for Miami — in one day.'
+    tagline   = 'One day. One team. One community. Build the AI agents Miami needs.'
 where slug = 'impact-miami-2';
 
 delete from public.schedule_items
@@ -23,7 +23,7 @@ cross join (values
    'Welcome to the hackathon. Opening remarks, formal introduction of the event, and a walkthrough of the challenge prompt, rules, and expectations for the day.',
    'Grab your badge, connect to WiFi, and settle in before we kick things off.', 10),
   ('2026-10-25 10:00:00-04', '2026-10-25 12:30:00-04',
-   'Project Building — Morning Session',
+   'Project Building: Morning Session',
    'Teams get to work building their solutions. Use this time to design, develop, and iterate. Mentors will be available to assist regarding technical and device issues.',
    'First block of build time before Lunch. Hit the ground running!', 20),
   ('2026-10-25 12:30:00-04', '2026-10-25 13:00:00-04',
@@ -31,7 +31,7 @@ cross join (values
    'Take a break, recharge, and connect with other teams. Lunch is provided for all participants.',
    'Pizza provided for all participants.', 30),
   ('2026-10-25 13:00:00-04', '2026-10-25 15:30:00-04',
-   'Project Building & Pitch Creation — Afternoon Session',
+   'Project Building & Pitch Creation: Afternoon Session',
    'Back to building. Final stretch before presentations begin. Use this time to polish your demo, finalize your pitch deck, and prepare your story.',
    'Two and a half hours left to build. Start thinking about your pitch and finalizing pitch decks.', 40),
   ('2026-10-25 15:30:00-04', '2026-10-25 16:45:00-04',

@@ -13,7 +13,7 @@ export const CopyButton = ({ value, label = "Copy", className }: { value: string
       toast.success("Copied to clipboard");
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      toast.error("Couldn't copy — copy it manually.");
+      toast.error("Couldn't copy. Copy it manually.");
     }
   };
 

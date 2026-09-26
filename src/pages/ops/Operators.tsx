@@ -50,7 +50,7 @@ const Operators = () => {
         <Panel className="p-5">
           <p className="kicker mb-3">Add operator</p>
           <p className="mb-4 text-sm text-dim">
-            The person must already have a Supabase Auth account (they've signed in once). You can't look up a user by email from here — ask
+            The person must already have a Supabase Auth account (they've signed in once). You can't look up a user by email from here. Ask
             them for their user id (shown on the "access pending" screen after they sign in), or run the bootstrap SQL below.
           </p>
           <div className="grid gap-4 sm:grid-cols-3">

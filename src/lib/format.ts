@@ -21,7 +21,7 @@ export const formatTimeRange = (start: string | null | undefined, end: string | 
 export const formatDateTime = (iso: string | null | undefined, tz = TZ) =>
   iso
     ? new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZone: tz })
-    : "—";
+    : "-";
 
 export interface Countdown {
   days: number;

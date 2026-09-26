@@ -58,7 +58,7 @@ const SignIn = () => {
     });
     setBusy(null);
     if (error) toast.error(error.message);
-    else toast.success("Magic link sent — check your email.");
+    else toast.success("Magic link sent. Check your email.");
   };
 
   return (
@@ -66,7 +66,7 @@ const SignIn = () => {
       <Panel className="w-full max-w-sm p-6">
         <p className="kicker mb-3">Operator console</p>
         <h1 className="font-display text-xl font-semibold text-ink">Sign in</h1>
-        <p className="mt-2 text-sm text-dim">Operators only — ask an owner for an invite. New accounts aren't created here.</p>
+        <p className="mt-2 text-sm text-dim">Operators only. Ask an owner for an invite. New accounts aren't created here.</p>
         <form onSubmit={signInWithPassword} className="mt-5 space-y-4">
           <Field label="Email" htmlFor="ops-email">
             <Input id="ops-email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

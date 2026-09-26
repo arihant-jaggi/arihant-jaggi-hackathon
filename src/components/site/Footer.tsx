@@ -22,10 +22,10 @@ export const Footer = () => {
             )}
           </div>
           <div className="flex flex-wrap items-center gap-6">
-            <img src="/yci.png" alt="Young Coders Initiative" className="h-10 w-auto object-contain" />
+            <img src="/yci-transparent.png" alt="Young Coders Initiative" className="h-10 w-auto object-contain" />
             <div className="flex items-center gap-2 text-sm text-dim">
               <span>In partnership with</span>
-              <img src="/bigred.png" alt="Big Red Education" className="h-8 w-auto rounded object-contain" />
+              <img src="/bigred-logo.png" alt="Big Red Education" className="h-8 w-auto rounded object-contain" />
             </div>
           </div>
         </div>

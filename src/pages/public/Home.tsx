@@ -3,7 +3,6 @@ import { Badge, ButtonLink, GradientText, IconTile, Kicker, Panel, SectionTitle 
 import { Countdown } from "@/components/site/Countdown";
 import { EventFacts } from "@/components/site/EventFacts";
 import { HeroDisplay } from "@/components/site/HeroDisplay";
-import { PartnerBadge } from "@/components/site/PartnerBadge";
 import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
@@ -46,13 +45,9 @@ const Home = () => {
     <main>
       {/* ---------------------------------------------------------------- Hero */}
       <section className="container pb-16 pt-10 sm:pb-24 sm:pt-14">
-        <div className="flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <Kicker>Young Coders Initiative presents</Kicker>
-          <PartnerBadge name={event.partner_name} className="self-end sm:self-auto" />
-        </div>
-
-        <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
           <div>
+            <Kicker className="mb-8">Young Coders Initiative presents</Kicker>
             <h1 className="font-display text-[15vw] font-extrabold leading-[0.9] tracking-[-0.03em] text-ink sm:text-7xl md:text-8xl">
               Impact
               <br />
@@ -174,10 +169,10 @@ const Home = () => {
       <section className="container py-16 sm:py-24">
         <SectionTitle kicker="Partners" title="Presented with" />
         <div className="mt-10 flex flex-wrap items-center gap-10">
-          <img src="/yci.png" alt="Young Coders Initiative" className="h-14 w-auto object-contain" />
+          <img src="/yci-transparent.png" alt="Young Coders Initiative" className="h-14 w-auto object-contain" />
           <span aria-hidden className="h-10 w-px bg-line" />
           <div className="flex items-center gap-3">
-            <img src="/bigred.png" alt="Big Red Education" className="h-12 w-auto rounded object-contain" />
+            <img src="/bigred-logo.png" alt="Big Red Education" className="h-12 w-auto rounded object-contain" />
             <span className="text-sm text-dim">{event.partner_name}</span>
           </div>
         </div>

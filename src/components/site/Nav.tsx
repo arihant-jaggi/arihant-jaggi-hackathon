@@ -11,6 +11,7 @@ const SECTIONS = [
   { href: "/#schedule", label: "Schedule" },
   { href: "/#prizes", label: "Prizes" },
   { href: "/#faq", label: "FAQ" },
+  { href: "/judges", label: "Judges" },
 ];
 
 export const Nav = () => {

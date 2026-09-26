@@ -16,6 +16,26 @@ import type {
 // Public reads. Each falls back to the flyer defaults with no backend.
 // ---------------------------------------------------------------------------
 
+// The first migration seeded a 9:00 start, a single "Hack day" block and a
+// 9:00 FAQ answer. Until 20260926000000_schedule_and_hours.sql runs (or an
+// operator edits these in /ops), show the current 9:30-5:30 content instead.
+// Anything an operator has changed no longer matches and is shown as stored.
+const SEEDED_START = new Date("2026-10-25T09:00:00-04:00").getTime();
+const SEEDED_TIMES = "9:00 AM to 5:30 PM";
+
+export const withCurrentHours = (event: EventRow): EventRow =>
+  event.starts_at && new Date(event.starts_at).getTime() === SEEDED_START
+    ? { ...event, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at }
+    : event;
+
+export const withCurrentSchedule = (rows: ScheduleItemRow[]): ScheduleItemRow[] =>
+  rows.length === 1 && rows[0].title === "Hack day" && new Date(rows[0].starts_at).getTime() === SEEDED_START
+    ? DEFAULT_SCHEDULE.map((r) => ({ ...r, event_id: rows[0].event_id }))
+    : rows;
+
+export const withCurrentFaqTimes = (rows: FaqItemRow[]): FaqItemRow[] =>
+  rows.map((f) => (f.answer.includes(SEEDED_TIMES) ? { ...f, answer: f.answer.replace(SEEDED_TIMES, "9:30 AM to 5:30 PM") } : f));
+
 export const useEvent = () =>
   useQuery({
     queryKey: ["event", EVENT_SLUG],
@@ -23,15 +43,21 @@ export const useEvent = () =>
       if (!supabase) return DEFAULT_EVENT;
       const { data, error } = await supabase.from("events").select("*").eq("slug", EVENT_SLUG).maybeSingle();
       if (error) throw error;
-      return (data as EventRow) ?? DEFAULT_EVENT;
+      return data ? withCurrentHours(data as EventRow) : DEFAULT_EVENT;
     },
     placeholderData: DEFAULT_EVENT,
     staleTime: 60_000,
   });
 
-// Postgrest builder generics are too deep to name here.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useEventChildren = <T,>(table: string, fallback: T[], order: [string, boolean][], extra?: (q: any) => any) => {
+const useEventChildren = <T,>(
+  table: string,
+  fallback: T[],
+  order: [string, boolean][],
+  // Postgrest builder generics are too deep to name here.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extra?: (q: any) => any,
+  normalize: (rows: T[]) => T[] = (rows) => rows,
+) => {
   const { data: event } = useEvent();
   const eventId = event?.id;
   return useQuery({
@@ -44,7 +70,7 @@ const useEventChildren = <T,>(table: string, fallback: T[], order: [string, bool
       if (extra) q = extra(q);
       const { data, error } = await q;
       if (error) throw error;
-      return (data as T[]) ?? [];
+      return normalize((data as T[]) ?? []);
     },
     placeholderData: supabase ? undefined : fallback,
     staleTime: 60_000,
@@ -53,11 +79,17 @@ const useEventChildren = <T,>(table: string, fallback: T[], order: [string, bool
 
 export const useTracks = () => useEventChildren<TrackRow>("tracks", [], [["sort_order", true]]);
 export const useSchedule = () =>
-  useEventChildren<ScheduleItemRow>("schedule_items", DEFAULT_SCHEDULE, [
-    ["starts_at", true],
-    ["sort_order", true],
-  ]);
-export const useFaqs = () => useEventChildren<FaqItemRow>("faq_items", DEFAULT_FAQS, [["sort_order", true]]);
+  useEventChildren<ScheduleItemRow>(
+    "schedule_items",
+    DEFAULT_SCHEDULE,
+    [
+      ["starts_at", true],
+      ["sort_order", true],
+    ],
+    undefined,
+    withCurrentSchedule,
+  );
+export const useFaqs = () => useEventChildren<FaqItemRow>("faq_items", DEFAULT_FAQS, [["sort_order", true]], undefined, withCurrentFaqTimes);
 export const useAnnouncements = () =>
   useEventChildren<AnnouncementRow>(
     "announcements",

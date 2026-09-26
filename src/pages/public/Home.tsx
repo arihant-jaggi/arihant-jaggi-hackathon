@@ -2,6 +2,9 @@ import { ArrowRight, ArrowUpRight, CalendarPlus, Megaphone, Sparkles, Trophy, Us
 import { Badge, ButtonLink, GradientText, IconTile, Kicker, Panel, SectionTitle } from "@/components/ui";
 import { Countdown } from "@/components/site/Countdown";
 import { EventFacts } from "@/components/site/EventFacts";
+import { HeroDisplay } from "@/components/site/HeroDisplay";
+import { PartnerBadge } from "@/components/site/PartnerBadge";
+import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
 import { ARCHIVE_URL } from "@/lib/supabase";
@@ -42,34 +45,48 @@ const Home = () => {
   return (
     <main>
       {/* ---------------------------------------------------------------- Hero */}
-      <section className="container pb-16 pt-14 sm:pb-24 sm:pt-20">
-        <Kicker>Young Coders Initiative presents</Kicker>
-        <h1 className="mt-6 font-display text-[15vw] font-extrabold leading-[0.9] tracking-[-0.03em] text-ink sm:text-7xl md:text-8xl">
-          Impact
-          <br />
-          Miami <GradientText>{event.edition}</GradientText>
-        </h1>
-        <p className="mt-6 max-w-xl text-lg text-dim sm:text-xl">{event.tagline}</p>
-
-        <div className="mt-9 flex flex-wrap items-center gap-4">
-          <ButtonLink to="/register" size="lg">
-            {status === "open" ? "Register your team" : status === "waitlist" ? "Join the waitlist" : "Registration coming soon"}
-            <ArrowRight className="h-4 w-4" />
-          </ButtonLink>
-          {calendarUrl && (
-            <a
-              href={calendarUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex h-14 items-center gap-2 rounded-xl border border-line-strong px-6 font-mono text-[12px] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:border-signal hover:text-signal"
-            >
-              <CalendarPlus className="h-4 w-4" />
-              Add to calendar
-            </a>
-          )}
+      <section className="container pb-16 pt-10 sm:pb-24 sm:pt-14">
+        <div className="flex flex-col-reverse items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+          <Kicker>Young Coders Initiative presents</Kicker>
+          <PartnerBadge name={event.partner_name} className="self-end sm:self-auto" />
         </div>
 
-        <Countdown target={event.starts_at} className="mt-12" />
+        <div className="mt-10 grid items-center gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <div>
+            <h1 className="font-display text-[15vw] font-extrabold leading-[0.9] tracking-[-0.03em] text-ink sm:text-7xl md:text-8xl">
+              Impact
+              <br />
+              Miami <GradientText>{event.edition}</GradientText>
+            </h1>
+            <div className="mt-5 flex items-center gap-5">
+              <span className="font-display text-3xl font-medium tracking-[-0.02em] text-ink sm:text-4xl">Hackathon</span>
+              <span aria-hidden className="h-0.5 flex-1 bg-gradient-to-r from-signal via-pulse/60 to-transparent" />
+            </div>
+            <p className="mt-6 max-w-xl text-lg text-dim sm:text-xl">{event.tagline}</p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <ButtonLink to="/register" size="lg">
+                {status === "open" ? "Register your team" : status === "waitlist" ? "Join the waitlist" : "Registration coming soon"}
+                <ArrowRight className="h-4 w-4" />
+              </ButtonLink>
+              {calendarUrl && (
+                <a
+                  href={calendarUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-14 items-center gap-2 rounded-xl border border-line-strong px-6 font-mono text-[12px] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:border-signal hover:text-signal"
+                >
+                  <CalendarPlus className="h-4 w-4" />
+                  Add to calendar
+                </a>
+              )}
+            </div>
+
+            <Countdown target={event.starts_at} className="mt-12" />
+          </div>
+
+          <HeroDisplay event={event} />
+        </div>
       </section>
 
       {/* ---------------------------------------------------------- Event facts */}
@@ -110,21 +127,12 @@ const Home = () => {
 
       {/* ----------------------------------------------------------- Schedule */}
       <section id="schedule" className="container scroll-mt-20 py-16 sm:py-24">
-        <SectionTitle kicker="Schedule" title="Run of show" />
-        {schedule && schedule.length > 0 && (
-          <ol className="mt-10 divide-y divide-line border-y border-line">
-            {schedule.map((item) => (
-              <li key={item.id} className="flex flex-col gap-2 py-5 sm:flex-row sm:items-baseline sm:gap-8">
-                <span className="shrink-0 font-mono text-sm tabular-nums text-signal sm:w-48">{formatTimeRange(item.starts_at, item.ends_at, event.timezone)}</span>
-                <div>
-                  <p className="font-display text-lg font-bold text-ink">{item.title}</p>
-                  {item.description && <p className="mt-1 text-sm text-dim">{item.description}</p>}
-                  {item.location && <p className="mt-1 font-mono text-xs uppercase tracking-[0.1em] text-faint">{item.location}</p>}
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
+        <SectionTitle
+          kicker="Schedule"
+          title="Run of show"
+          lede={`${formatEventDate(event.starts_at, event.timezone)} · ${formatTimeRange(event.starts_at, event.ends_at, event.timezone)}`}
+        />
+        {schedule && schedule.length > 0 && <ScheduleTimeline items={schedule} timezone={event.timezone} />}
       </section>
 
       {/* ------------------------------------------------------- Announcements */}

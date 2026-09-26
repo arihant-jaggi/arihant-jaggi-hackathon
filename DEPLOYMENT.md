@@ -24,6 +24,8 @@ share one Supabase project (table names don't collide) or use two.
    `announcements`, `teams`, `team_members`, plus `register_team()` and
    `event_public_stats()`), so the archived site's tables are untouched. A
    fresh Supabase project works too if you'd rather keep them fully separate.
+   Then run `supabase/migrations/20260926000000_schedule_and_hours.sql`, which
+   sets the 9:30 AM – 5:30 PM hours and loads the run of show.
 
 2. **Create the first operator.**
    - Sign up at `/ops` (magic link), or create a user directly in

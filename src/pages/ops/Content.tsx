@@ -133,6 +133,7 @@ const ScheduleTab = ({ eventId }: { eventId: string }) => {
             </div>
             <Input defaultValue={s.location ?? ""} onBlur={(e) => update.mutate({ id: s.id, location: e.target.value || null })} placeholder="Location" />
             <Textarea defaultValue={s.description ?? ""} onBlur={(e) => update.mutate({ id: s.id, description: e.target.value || null })} placeholder="Description" />
+            <Input defaultValue={s.highlight ?? ""} onBlur={(e) => (e.target.value || null) !== (s.highlight ?? null) && update.mutate({ id: s.id, highlight: e.target.value || null })} placeholder="Note (optional, shown in italics)" />
           </Row>
         ))
       )}

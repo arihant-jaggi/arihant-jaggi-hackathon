@@ -11,7 +11,7 @@ export const DEFAULT_EVENT: EventRow = {
   tagline: "A one-day youth hackathon building tech for Miami.",
   description:
     "Young Coders Initiative presents Impact Miami 2.0 — a one-day hackathon where student teams design, build, and pitch projects that make a real difference for Miami communities.",
-  starts_at: "2026-10-25T09:00:00-04:00",
+  starts_at: "2026-10-25T09:30:00-04:00",
   ends_at: "2026-10-25T17:30:00-04:00",
   timezone: "America/New_York",
   venue_name: "The Cushman School",
@@ -31,17 +31,46 @@ export const DEFAULT_EVENT: EventRow = {
   is_current: true,
 };
 
+const LOCATION = "The Cushman School, Middle School";
+
+// Run of show, carried over from Spring 2026 and shifted to the 9:30–5:30 day.
+// Mirrors supabase/migrations/20260926000000_schedule_and_hours.sql.
+const block = (
+  n: number,
+  start: string,
+  end: string,
+  title: string,
+  description: string,
+  highlight: string | null,
+): ScheduleItemRow => ({
+  id: `local-${n}`,
+  event_id: "local",
+  starts_at: `2026-10-25T${start}:00-04:00`,
+  ends_at: `2026-10-25T${end}:00-04:00`,
+  title,
+  description,
+  location: LOCATION,
+  highlight,
+  sort_order: n * 10,
+});
+
 export const DEFAULT_SCHEDULE: ScheduleItemRow[] = [
-  {
-    id: "local-hack-day",
-    event_id: "local",
-    starts_at: "2026-10-25T09:00:00-04:00",
-    ends_at: "2026-10-25T17:30:00-04:00",
-    title: "Hack day",
-    description: "Doors open at 9:00 AM; awards wrap by 5:30 PM. The detailed run of show is posted here before the event.",
-    location: "The Cushman School, Middle School",
-    sort_order: 0,
-  },
+  block(1, "09:30", "10:00", "Introduction and Commencement",
+    "Welcome to the hackathon. Opening remarks, formal introduction of the event, and a walkthrough of the challenge prompt, rules, and expectations for the day.",
+    "Grab your badge, connect to WiFi, and settle in before we kick things off."),
+  block(2, "10:00", "12:30", "Project Building — Morning Session",
+    "Teams get to work building their solutions. Use this time to design, develop, and iterate. Mentors will be available to help with technical and device issues.",
+    "First block of build time before lunch. Hit the ground running!"),
+  block(3, "12:30", "13:00", "Lunch Break (Optional)", "Take a break, recharge, and connect with other teams.", null),
+  block(4, "13:00", "15:30", "Project Building & Pitch Creation — Afternoon Session",
+    "Back to building. Final stretch before presentations begin. Use this time to polish your demo, finalize your pitch deck, and prepare your story.",
+    "Two and a half hours left to build. Start thinking about your pitch and finalizing pitch decks."),
+  block(5, "15:30", "16:30", "Pitch Presentations",
+    "Teams present their projects to the judging panel. Each team has a 5-minute window to pitch, followed by 2 minutes of Q&A from the judges.",
+    "Your pitch should cover the problem you identified, who it affects, a walkthrough of your solution, the tech you used, and your vision for where it goes next. Transitions between teams are kept to 2 minutes, so be ready before your slot."),
+  block(6, "16:30", "17:30", "Final Judging and Awards",
+    "Judges deliberate and final scores are tallied. Winners are announced and recognized. Closing remarks to follow.",
+    "Winners announced live. Stick around for the closing ceremony."),
 ];
 
 export const DEFAULT_FAQS: FaqItemRow[] = [
@@ -50,7 +79,7 @@ export const DEFAULT_FAQS: FaqItemRow[] = [
     event_id: "local",
     question: "When and where is Impact Miami 2.0?",
     answer:
-      "Sunday, October 25, 2026, from 9:00 AM to 5:30 PM at The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137.",
+      "Sunday, October 25, 2026, from 9:30 AM to 5:30 PM at The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137.",
     sort_order: 10,
   },
   {

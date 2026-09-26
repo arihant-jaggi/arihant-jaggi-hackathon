@@ -54,6 +54,8 @@ export interface ScheduleItemRow {
   title: string;
   description: string | null;
   location: string | null;
+  /** Short italic note under the block. Column added in 20260926000000. */
+  highlight?: string | null;
   sort_order: number;
 }
 

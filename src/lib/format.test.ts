@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { formatEventDate, formatTimeRange, countdownTo, toLocalInput, fromLocalInput } from "./format";
 
-// Impact Miami 2.0: Sunday Oct 25, 2026, 9:00 AM - 5:30 PM America/New_York (EDT, UTC-4).
+// Sample times on the event date, America/New_York (EDT, UTC-4).
 const EVENT_START = "2026-10-25T09:00:00-04:00";
 const EVENT_END = "2026-10-25T17:30:00-04:00";
 

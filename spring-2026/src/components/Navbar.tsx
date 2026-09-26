@@ -61,7 +61,8 @@ const Navbar = () => {
   ] as { to: string; label: string }[];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
+    // top-9 offsets the navbar below the fixed 36px ArchiveBanner (see App.tsx).
+    <nav className="fixed top-9 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="font-display text-lg sm:text-xl font-semibold tracking-tight">
           <span className="text-gradient">{hackathonName}</span>

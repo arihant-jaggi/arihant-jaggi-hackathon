@@ -1,10 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in environment variables.");
-}
+/** Null when the site runs without a backend (local preview, forks). */
+export const supabase: SupabaseClient | null = url && anonKey ? createClient(url, anonKey) : null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isBackendConfigured = supabase !== null;
+
+/** The event this deployment is for. Override with VITE_EVENT_SLUG. */
+export const EVENT_SLUG = (import.meta.env.VITE_EVENT_SLUG as string | undefined) ?? "impact-miami-2";
+
+export const ARCHIVE_URL = "https://spring2026.youngcodersimpact.com";
+
+export const requireSupabase = (): SupabaseClient => {
+  if (!supabase) throw new Error("Backend not configured: set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.");
+  return supabase;
+};

@@ -1,22 +1,52 @@
-# Young Coders Impact Miami
+# Impact Miami 2.0
 
-This repo is a Vite + React + shadcn/ui starter wired to Supabase. Use `src/lib/supabase.ts` to connect to the `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` values defined in `.env`.
+Website and operator console for **Impact Miami 2.0**, a youth hackathon presented by the Young Coders Initiative in partnership with Big Red Education.
 
-## Getting started
+**Sunday, October 25, 2026 · 9:00 AM to 5:30 PM · The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137**
 
-1. Install dependencies with your preferred package manager (`npm install`, `yarn install`, etc.). Node.js must be available on the machine before running the command.
-2. Confirm that `.env` contains the Supabase credentials (`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`). These values are already populated for the provided project.
-3. Run `npm run dev` (or equivalent) to start the Vite dev server.
+| Where | What |
+| --- | --- |
+| `/` (repo root) | Impact Miami 2.0, served at **youngcodersimpact.com** |
+| `spring-2026/` | The archived Spring 2026 site, served at **spring2026.youngcodersimpact.com** |
+| `supabase/migrations/` | Backend schema for 2.0 (tables, row-level security, registration RPC) |
 
-## Supabase and migrations
+Deployment steps (Vercel projects, domains, Supabase, first operator) are in [DEPLOYMENT.md](./DEPLOYMENT.md).
 
-- The Supabase client is exported from `src/lib/supabase.ts`; import it wherever you need database or auth access.
-- Use the `src/migrations` directory to stage SQL or migration scripts before applying them with Supabase CLI or Dashboard.
-- Content (hackathon metadata, challenges, schedule, venue, FAQ, contact info) is now seeded in Supabase (`hackathon_info`, `site_details`, `challenges`, `event_schedule`, `venues`, `judges_mentors`, `faqs`, `contact_details`, etc.). Every UI screen reads live data from Supabase tables instead of hard-coded arrays, so update those rows in the database when the event details change. The `/admin` route provides an authenticated dashboard where organizers can add/edit/delete any of those records without touching the database manually.
+## Stack
 
-## Available scripts
+Vite, React 18, TypeScript, Tailwind CSS, TanStack Query, and Supabase (Postgres, Auth, RLS).
 
-- `npm run dev` – start the dev server.
-- `npm run build` – produce a production build.
-- `npm run preview` – serve the production build locally.
-- `npm run test` / `npm run test:watch` – run Vitest suites.
+## Local development
+
+```sh
+npm install
+cp .env.example .env.local   # optional: add Supabase URL + anon key
+npm run dev
+```
+
+Without Supabase credentials the public site still renders, using the facts from the event flyer (`src/lib/defaults.ts`). Registration and the operator console need the backend.
+
+## What's where
+
+- `src/pages/public/`: the homepage, team registration, and 404 page.
+- `src/pages/ops/`: the operator console at `/ops`. Operators sign in with Supabase Auth and can:
+  - approve, waitlist, or reject teams
+  - edit teams and members
+  - run check-in on event day
+  - export the roster to CSV
+  - flip registration between coming soon, open, waitlist, and closed
+  - edit tracks, schedule, FAQ, and announcements
+  - manage other operators (owners only)
+- `src/lib/api.ts`: public data hooks. `src/lib/ops.ts`: console data hooks.
+- `src/components/ui.tsx`: design primitives. The tokens in `tailwind.config.ts` come from the flyer: near-black grid, off-white ink, and a green `#3DEB8F` → cyan `#16D4F0` gradient.
+
+## Security model
+
+Team and member data (including guardian contact info) is readable only by operators, which is enforced by Postgres row-level security. The public can read published event content and call just two functions: `register_team` and `event_public_stats`, which returns aggregate counts only.
+
+## Scripts
+
+- `npm run dev`: dev server
+- `npm run build`: typecheck and production build
+- `npm run test`: Vitest
+- `npm run lint`: ESLint

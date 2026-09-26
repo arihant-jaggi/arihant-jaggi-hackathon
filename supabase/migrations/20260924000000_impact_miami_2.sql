@@ -365,7 +365,7 @@ insert into public.events (
   'Impact Miami',
   '2.0',
   'A one-day youth hackathon building tech for Miami.',
-  'Young Coders Initiative presents Impact Miami 2.0 — a one-day hackathon where student teams design, build, and pitch projects that make a real difference for Miami communities.',
+  'Young Coders Initiative presents Impact Miami 2.0, a one-day hackathon where student teams design, build, and pitch projects that make a real difference for Miami communities.',
   '2026-10-25 09:00:00-04',
   '2026-10-25 17:30:00-04',
   'The Cushman School',
@@ -394,7 +394,7 @@ select e.id, q.question, q.answer, q.sort_order
 from public.events e
 cross join (values
   ('When and where is Impact Miami 2.0?', 'Sunday, October 25, 2026, from 9:00 AM to 5:30 PM at The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137.', 10),
-  ('How do I register?', 'Registration is coming soon. When it opens, the Register button on this site goes live — one teammate registers the whole team.', 20),
+  ('How do I register?', 'Registration is coming soon. When it opens, the Register button on this site goes live, and one teammate registers the whole team.', 20),
   ('What can we win?', 'There is a cash prize pool, plus awards for winning teams.', 30),
   ('Who is running it?', 'Impact Miami 2.0 is presented by the Young Coders Initiative in partnership with Big Red Education.', 40),
   ('Where can I see the last hackathon?', 'The Spring 2026 site is archived at spring2026.youngcodersimpact.com.', 50)

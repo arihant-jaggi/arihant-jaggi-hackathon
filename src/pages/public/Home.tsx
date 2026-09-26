@@ -95,7 +95,7 @@ const Home = () => {
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           <WhyCard icon={<Sparkles className="h-5 w-5" />} title="Build for Miami" body="Student teams design, build, and pitch projects that make a real difference for local communities." />
           <WhyCard icon={<Trophy className="h-5 w-5" />} title="Cash prizes & awards" body={`${event.prize_summary ?? "Prize pool"} ${event.prize_detail ?? ""}`.trim()} />
-          <WhyCard icon={<Zap className="h-5 w-5" />} title="One day" body={`Everything happens ${formatEventDate(event.starts_at, event.timezone)} — doors open in the morning, projects ship by evening.`} />
+          <WhyCard icon={<Zap className="h-5 w-5" />} title="One day" body={`Everything happens ${formatEventDate(event.starts_at, event.timezone)}. Doors open in the morning, projects ship by evening.`} />
         </div>
       </section>
 
@@ -215,7 +215,7 @@ const Home = () => {
         <div className={cn("signal-border brackets rounded-2xl px-8 py-14 text-center sm:py-20")}>
           <Users className="mx-auto h-8 w-8 text-signal" aria-hidden />
           <h2 className="mx-auto mt-5 max-w-xl font-display text-3xl font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-4xl">
-            {status === "open" ? "Grab your team and register." : status === "waitlist" ? "Spots are full — join the waitlist." : "Registration status:"}{" "}
+            {status === "open" ? "Grab your team and register." : status === "waitlist" ? "Spots are full. Join the waitlist." : "Registration status:"}{" "}
             {status !== "open" && status !== "waitlist" && <GradientText>{registrationLabel[status]}</GradientText>}
           </h2>
           <div className="mt-8">

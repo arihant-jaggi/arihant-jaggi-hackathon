@@ -22,24 +22,52 @@ import type {
 // Anything an operator has changed no longer matches and is shown as stored.
 const SEEDED_START = new Date("2026-10-25T09:00:00-04:00").getTime();
 const SEEDED_TIMES = "9:00 AM to 5:30 PM";
-const SEEDED_TAGLINE = "A one-day youth hackathon building tech for Miami.";
+// Earlier default taglines, replaced by the current one until an operator sets their own.
+const SUPERSEDED_TAGLINES = [
+  "A one-day youth hackathon building tech for Miami.",
+  "Build AI agents that work for Miami — in one day.",
+];
+
+/**
+ * The site uses no em dashes. Text from the database (seeded rows, operator
+ * edits) is cleaned on the way in: "A — B" becomes "A: B" in titles and
+ * "A, B" elsewhere.
+ */
+export const noEmDash = (text: string | null, asTitle = false): string | null =>
+  text == null ? text : text.replace(/\s*\u2014\s*/g, asTitle ? ": " : ", ");
+
+const scrub = <T extends object>(row: T, titleKeys: (keyof T)[] = []): T => {
+  const out = { ...row };
+  for (const key of Object.keys(out) as (keyof T)[]) {
+    const value = out[key];
+    if (typeof value === "string") out[key] = noEmDash(value, titleKeys.includes(key)) as T[keyof T];
+  }
+  return out;
+};
 
 export const withCurrentHours = (event: EventRow): EventRow => {
   let out = event;
   if (event.starts_at && new Date(event.starts_at).getTime() === SEEDED_START) {
     out = { ...out, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at };
   }
-  if (event.tagline === SEEDED_TAGLINE) out = { ...out, tagline: DEFAULT_EVENT.tagline };
-  return out;
+  if (event.tagline && SUPERSEDED_TAGLINES.includes(event.tagline)) out = { ...out, tagline: DEFAULT_EVENT.tagline };
+  return scrub(out, ["name"]);
 };
 
 export const withCurrentSchedule = (rows: ScheduleItemRow[]): ScheduleItemRow[] =>
   rows.length === 1 && rows[0].title === "Hack day" && new Date(rows[0].starts_at).getTime() === SEEDED_START
     ? DEFAULT_SCHEDULE.map((r) => ({ ...r, event_id: rows[0].event_id }))
-    : rows;
+    : rows.map((r) => scrub(r, ["title"]));
+
+const SEEDED_REGISTER_ANSWER = "the Register button on this site goes live \u2014 one teammate registers";
 
 export const withCurrentFaqTimes = (rows: FaqItemRow[]): FaqItemRow[] =>
-  rows.map((f) => (f.answer.includes(SEEDED_TIMES) ? { ...f, answer: f.answer.replace(SEEDED_TIMES, "9:30 AM to 5:30 PM") } : f));
+  rows.map((f) => {
+    const answer = f.answer
+      .replace(SEEDED_TIMES, "9:30 AM to 5:30 PM")
+      .replace(SEEDED_REGISTER_ANSWER, "the Register button on this site goes live, and one teammate registers");
+    return scrub(answer === f.answer ? f : { ...f, answer }, ["question"]);
+  });
 
 export const useEvent = () =>
   useQuery({
@@ -82,7 +110,8 @@ const useEventChildren = <T,>(
   });
 };
 
-export const useTracks = () => useEventChildren<TrackRow>("tracks", [], [["sort_order", true]]);
+export const useTracks = () =>
+  useEventChildren<TrackRow>("tracks", [], [["sort_order", true]], undefined, (rows) => rows.map((r) => scrub(r, ["title"])));
 export const useSchedule = () =>
   useEventChildren<ScheduleItemRow>(
     "schedule_items",
@@ -104,6 +133,7 @@ export const useAnnouncements = () =>
       ["created_at", false],
     ],
     (q) => q.eq("published", true),
+    (rows) => rows.map((r) => scrub(r, ["title"])),
   );
 
 export const useEventStats = () =>

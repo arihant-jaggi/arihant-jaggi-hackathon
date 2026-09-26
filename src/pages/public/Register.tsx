@@ -164,7 +164,7 @@ const Register = () => {
           </div>
           <p className="mt-6 text-sm text-dim">
             {result.team_status === "waitlisted"
-              ? "You're on the waitlist — we'll email your captain if a spot opens up."
+              ? "You're on the waitlist. We'll email your captain if a spot opens up."
               : "Save this code. We'll follow up by email with next steps before the event."}
           </p>
           <Link to="/" className="mt-8 inline-block font-mono text-xs uppercase tracking-[0.16em] text-signal hover:underline">
@@ -185,7 +185,7 @@ const Register = () => {
           <p className="text-dim">
             {closed
               ? "Registration for this event has closed. Check back for the next Impact Miami hackathon."
-              : "The registration form isn't live yet. Check back soon, or watch this page — the button up top will go green when it opens."}
+              : "The registration form isn't live yet. Check back soon, or watch this page. The button up top will go green when it opens."}
           </p>
           <EventFacts event={event} className="mt-8" />
         </Panel>
@@ -201,7 +201,7 @@ const Register = () => {
 
       {waitlist && (
         <Panel className="mt-8 border-warn/40 p-5">
-          <p className="text-sm text-ink">Team spots are full. New registrations join the waitlist — we'll reach out if room opens up.</p>
+          <p className="text-sm text-ink">Team spots are full. New registrations join the waitlist, and we'll reach out if room opens up.</p>
         </Panel>
       )}
 
@@ -236,7 +236,7 @@ const Register = () => {
               </Select>
             </Field>
           )}
-          <Field label="Project idea" htmlFor="team-idea" hint="Optional — a sentence or two is plenty">
+          <Field label="Project idea" htmlFor="team-idea" hint="Optional. A sentence or two is plenty.">
             <Textarea id="team-idea" value={projectIdea} onChange={(e) => setProjectIdea(e.target.value)} />
           </Field>
         </section>

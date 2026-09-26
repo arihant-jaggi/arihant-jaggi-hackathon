@@ -237,7 +237,7 @@ const TeamDetail = () => {
                 <Input id="t-table" defaultValue={team.table_number ?? ""} onBlur={(e) => saveField({ table_number: e.target.value || null })} />
               </Field>
               <Field label="Project idea" htmlFor="t-idea" hint="Set at registration.">
-                <Input id="t-idea" value={team.project_idea ?? "—"} readOnly disabled />
+                <Input id="t-idea" value={team.project_idea ?? "-"} readOnly disabled />
               </Field>
               <Field label="Private notes" htmlFor="t-notes" className="sm:col-span-2">
                 <Textarea id="t-notes" defaultValue={team.notes ?? ""} onBlur={(e) => saveField({ notes: e.target.value || null })} />

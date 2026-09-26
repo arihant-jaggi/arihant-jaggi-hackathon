@@ -33,7 +33,7 @@ export const DEFAULT_EVENT: EventRow = {
 
 const LOCATION = "The Cushman School, Middle School";
 
-// Run of show, carried over from Spring 2026 and shifted to the 9:30–5:30 day.
+// Run of show: Spring 2026's blocks and wording, on the 9:30–5:30 day.
 // Mirrors supabase/migrations/20260926000000_schedule_and_hours.sql.
 const block = (
   n: number,
@@ -59,18 +59,20 @@ export const DEFAULT_SCHEDULE: ScheduleItemRow[] = [
     "Welcome to the hackathon. Opening remarks, formal introduction of the event, and a walkthrough of the challenge prompt, rules, and expectations for the day.",
     "Grab your badge, connect to WiFi, and settle in before we kick things off."),
   block(2, "10:00", "12:30", "Project Building — Morning Session",
-    "Teams get to work building their solutions. Use this time to design, develop, and iterate. Mentors will be available to help with technical and device issues.",
-    "First block of build time before lunch. Hit the ground running!"),
-  block(3, "12:30", "13:00", "Lunch Break (Optional)", "Take a break, recharge, and connect with other teams.", null),
+    "Teams get to work building their solutions. Use this time to design, develop, and iterate. Mentors will be available to assist regarding technical and device issues.",
+    "First block of build time before Lunch. Hit the ground running!"),
+  block(3, "12:30", "13:00", "Lunch Break (OPTIONAL)",
+    "Take a break, recharge, and connect with other teams. Lunch is provided for all participants.",
+    "Pizza provided for all participants."),
   block(4, "13:00", "15:30", "Project Building & Pitch Creation — Afternoon Session",
     "Back to building. Final stretch before presentations begin. Use this time to polish your demo, finalize your pitch deck, and prepare your story.",
     "Two and a half hours left to build. Start thinking about your pitch and finalizing pitch decks."),
-  block(5, "15:30", "16:30", "Pitch Presentations",
-    "Teams present their projects to the judging panel. Each team has a 5-minute window to pitch, followed by 2 minutes of Q&A from the judges.",
-    "Your pitch should cover the problem you identified, who it affects, a walkthrough of your solution, the tech you used, and your vision for where it goes next. Transitions between teams are kept to 2 minutes, so be ready before your slot."),
-  block(6, "16:30", "17:30", "Final Judging and Awards",
+  block(5, "15:30", "16:45", "Pitch Presentations",
+    "Teams present their projects to the judging panel. Each team will have a 5 minute window to pitch followed by 2 minutes of Q&A from the judges.",
+    "Each team has 5 minutes to present followed by 2 minutes of Q&A from the judges. Your pitch should cover the problem you identified, who it affects, a walkthrough of your solution, the tech you used, and your vision for where it goes next. Transitions between teams are kept to 2 minutes so be ready before your slot. The 6 minute presentation window is a hard cutoff."),
+  block(6, "16:45", "17:30", "Final Judging and Awards",
     "Judges deliberate and final scores are tallied. Winners are announced and recognized. Closing remarks to follow.",
-    "Winners announced live. Stick around for the closing ceremony."),
+    "Winners announced live. Stick around for the closing ceremony with awards provided to winning recipients."),
 ];
 
 export const DEFAULT_FAQS: FaqItemRow[] = [

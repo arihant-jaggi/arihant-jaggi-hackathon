@@ -36,6 +36,9 @@ export const Footer = () => {
             <a href={ARCHIVE_URL} target="_blank" rel="noreferrer" className="hover:text-signal">
               Spring 2026 archive &#8599;
             </a>
+            <Link to="/#past" className="hover:text-signal">
+              Past hackathons
+            </Link>
             <Link to="/ops" className="hover:text-dim">
               Operators
             </Link>

@@ -62,6 +62,30 @@ describe("seed fallbacks", () => {
   });
 });
 
+describe("partners and prize", () => {
+  it("shows the $1,500 prize and both partners over the seeded values", () => {
+    const seeded = { ...seededEvent, prize_summary: "Huge cash prize pool", prize_detail: "Plus awards for winners.", partner_name: "Big Red Education" };
+    const out = withCurrentHours(seeded);
+    expect(out.prize_summary).toBe("$1,500 cash prize pool");
+    expect(out.prize_detail).toBe("And counting. Plus awards for winners.");
+    expect(out.partner_name).toBe("Big Red Education and Founders Future");
+  });
+
+  it("keeps a prize an operator has set", () => {
+    const edited = { ...seededEvent, prize_summary: "$2,000 cash prize pool", prize_detail: "Plus swag." };
+    expect(withCurrentHours(edited).prize_summary).toBe("$2,000 cash prize pool");
+  });
+
+  it("updates the seeded prize and organizer FAQ answers", () => {
+    const [prize, org] = withCurrentFaqTimes([
+      { id: "a", event_id: "e1", question: "What can we win?", answer: "There is a cash prize pool, plus awards for winning teams.", sort_order: 1 },
+      { id: "b", event_id: "e1", question: "Who is running it?", answer: "Impact Miami 2.0 is presented by the Young Coders Initiative in partnership with Big Red Education.", sort_order: 2 },
+    ]);
+    expect(prize.answer).toBe("A $1,500 cash prize pool so far, plus awards for winning teams.");
+    expect(org.answer).toContain("Big Red Education and Founders Future.");
+  });
+});
+
 describe("no em dashes", () => {
   it("uses a colon in titles and a comma elsewhere", () => {
     expect(noEmDash("Project Building \u2014 Morning Session", true)).toBe("Project Building: Morning Session");

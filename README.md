@@ -1,6 +1,6 @@
 # Impact Miami 2.0
 
-Website and operator console for **Impact Miami 2.0**, a youth hackathon presented by the Young Coders Initiative in partnership with Big Red Education.
+Website and operator console for **Impact Miami 2.0**, a youth hackathon presented by the Young Coders Initiative in partnership with Big Red Education and Founders Future.
 
 **Sunday, October 25, 2026 · 9:30 AM to 5:30 PM · The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137**
 

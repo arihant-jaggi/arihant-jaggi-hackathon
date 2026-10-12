@@ -1,14 +1,33 @@
-import { Mail, UserRound } from "lucide-react";
+import { Linkedin, Mail, UserRound } from "lucide-react";
 import { Badge, Kicker, Led, Panel } from "@/components/ui";
 import { useEvent } from "@/lib/api";
 import { DEFAULT_EVENT } from "@/lib/defaults";
+import { JUDGE_SEATS, JUDGES } from "@/lib/judges";
 
-const SLOTS = [
-  { role: "Judge", count: 3 },
-  { role: "Mentor", count: 3 },
-];
+const MENTOR_SEATS = 3;
 
-/** Judges & mentors: "coming soon" until the panel is announced. */
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+const TbaCard = ({ role }: { role: string }) => (
+  <Panel className="brackets flex items-center gap-4 p-5">
+    <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-dashed border-line-strong text-faint">
+      <UserRound className="h-6 w-6" />
+    </span>
+    <div className="min-w-0">
+      <div className="h-3 w-32 rounded bg-rail" />
+      <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">{role} · Announcing soon</p>
+    </div>
+  </Panel>
+);
+
+/** Judges & mentors: confirmed judges, plus open seats until announced. */
 const Judges = () => {
   const { data: event } = useEvent();
   const email = event?.contact_email ?? DEFAULT_EVENT.contact_email;
@@ -18,39 +37,50 @@ const Judges = () => {
       <div className="max-w-2xl space-y-5">
         <Kicker>Judges &amp; mentors</Kicker>
         <h1 className="font-display text-5xl font-extrabold leading-[0.95] tracking-[-0.03em] text-ink sm:text-6xl">
-          The panel is <span className="text-signal">loading</span>
+          Meet the <span className="text-signal">panel</span>
           <span className="animate-blink text-signal">_</span>
         </h1>
         <p className="text-lg text-dim">
-          We're lining up engineers, founders, and civic leaders to judge projects and mentor teams on the day. Announcements are coming soon.
+          These are the people judging projects at Impact Miami 2.0. More judges and our mentors are being announced as they're confirmed.
         </p>
-        <Badge tone="warn">
-          <Led tone="warn" className="h-1.5 w-1.5" /> Coming soon
+        <Badge tone="signal">
+          <Led pulse className="h-1.5 w-1.5" /> {JUDGES.length} of {JUDGE_SEATS} judges confirmed
         </Badge>
       </div>
 
-      <div className="mt-14 space-y-10">
-        {SLOTS.map(({ role, count }) => (
-          <section key={role}>
-            <p className="kicker mb-4">{role}s</p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: count }, (_, i) => (
-                <Panel key={i} className="brackets flex items-center gap-4 p-5">
-                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-dashed border-line-strong text-faint">
-                    <UserRound className="h-6 w-6" />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="h-3 w-32 rounded bg-rail" />
-                    <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
-                      {role} · TBA
-                    </p>
-                  </div>
-                </Panel>
-              ))}
+      <section className="mt-14">
+        <p className="kicker mb-4">Judges</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {JUDGES.map((j) => (
+            <div key={j.name} className="signal-border flex items-center gap-4 rounded-2xl p-5">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-signal-diag font-display text-lg font-extrabold text-void">
+                {initials(j.name)}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="font-display text-lg font-bold leading-tight text-ink">{j.name}</p>
+                <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-signal">{j.title ?? "Judge"}</p>
+              </div>
+              {j.linkedin && (
+                <a href={j.linkedin} target="_blank" rel="noreferrer" aria-label={`${j.name} on LinkedIn`} className="text-dim hover:text-signal">
+                  <Linkedin className="h-5 w-5" />
+                </a>
+              )}
             </div>
-          </section>
-        ))}
-      </div>
+          ))}
+          {Array.from({ length: Math.max(0, JUDGE_SEATS - JUDGES.length) }, (_, i) => (
+            <TbaCard key={i} role="Judge" />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-10">
+        <p className="kicker mb-4">Mentors</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: MENTOR_SEATS }, (_, i) => (
+            <TbaCard key={i} role="Mentor" />
+          ))}
+        </div>
+      </section>
 
       {email && (
         <Panel glow className="mt-14 flex flex-col items-start justify-between gap-5 p-8 sm:flex-row sm:items-center">

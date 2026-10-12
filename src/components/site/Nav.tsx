@@ -8,6 +8,7 @@ import { registrationLabel } from "@/lib/format";
 
 const SECTIONS = [
   { href: "/#about", label: "About" },
+  { href: "/#tracks", label: "Tracks" },
   { href: "/#schedule", label: "Schedule" },
   { href: "/#prizes", label: "Prizes" },
   { href: "/#faq", label: "FAQ" },

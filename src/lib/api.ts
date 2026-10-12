@@ -121,8 +121,21 @@ const useEventChildren = <T,>(
   });
 };
 
-export const useTracks = () =>
+const useAllTracks = () =>
   useEventChildren<TrackRow>("tracks", [], [["sort_order", true]], undefined, (rows) => rows.map((r) => scrub(r, ["title"])));
+
+/**
+ * Challenge tracks (the prompts), empty until operators release them. The
+ * database already hides unreleased tracks from the public; this also hides
+ * them on the public site for a signed-in operator, so nobody screenshots
+ * them early.
+ */
+export const useTracks = () => {
+  const { data: event } = useEvent();
+  const query = useAllTracks();
+  const released = !!event?.prompts_released;
+  return { ...query, data: released ? query.data : [], released };
+};
 export const useSchedule = () =>
   useEventChildren<ScheduleItemRow>(
     "schedule_items",

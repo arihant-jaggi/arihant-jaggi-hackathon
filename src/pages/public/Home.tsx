@@ -6,6 +6,7 @@ import { EventFacts } from "@/components/site/EventFacts";
 import { HeroDisplay } from "@/components/site/HeroDisplay";
 import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
 import { PastHackathons } from "@/components/site/PastHackathons";
+import { TracksSection } from "@/components/site/TracksSection";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
 import { PARTNERS } from "@/lib/partners";
@@ -27,7 +28,7 @@ const googleCalendarUrl = (title: string, details: string, location: string, sta
 
 const Home = () => {
   const { data: event } = useEvent();
-  const { data: tracks } = useTracks();
+  const { data: tracks, released: tracksReleased } = useTracks();
   const { data: schedule } = useSchedule();
   const { data: faqs } = useFaqs();
   const { data: announcements } = useAnnouncements();
@@ -108,25 +109,7 @@ const Home = () => {
       </section>
 
       {/* ------------------------------------------------------------ Tracks */}
-      <section id="tracks" className="container scroll-mt-20 py-16 sm:py-24">
-        <SectionTitle kicker="Tracks" title="Challenge tracks" />
-        <div className="mt-10">
-          {tracks && tracks.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {tracks.map((t) => (
-                <Panel key={t.id} className="p-6">
-                  <h3 className="font-display text-xl font-bold text-ink">{t.title}</h3>
-                  {t.summary && <p className="mt-2 text-sm text-dim">{t.summary}</p>}
-                </Panel>
-              ))}
-            </div>
-          ) : (
-            <Panel className="brackets p-8 text-center sm:p-12">
-              <p className="font-mono text-sm text-dim">Challenge tracks drop closer to the event.</p>
-            </Panel>
-          )}
-        </div>
-      </section>
+      <TracksSection tracks={tracks ?? []} released={tracksReleased} />
 
       {/* ----------------------------------------------------------- Schedule */}
       <section id="schedule" className="container scroll-mt-20 py-16 sm:py-24">

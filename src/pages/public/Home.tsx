@@ -1,5 +1,6 @@
+import { Link } from "react-router-dom";
 import { ArrowRight, CalendarPlus, Megaphone, Sparkles, Trophy, Users, Zap } from "lucide-react";
-import { Badge, ButtonLink, GradientText, IconTile, Kicker, Panel, SectionTitle } from "@/components/ui";
+import { Badge, ButtonLink, GradientText, IconTile, Kicker, Led, Panel, SectionTitle } from "@/components/ui";
 import { Countdown } from "@/components/site/Countdown";
 import { EventFacts } from "@/components/site/EventFacts";
 import { HeroDisplay } from "@/components/site/HeroDisplay";
@@ -7,6 +8,7 @@ import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
 import { PastHackathons } from "@/components/site/PastHackathons";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
+import { PARTNERS } from "@/lib/partners";
 import { cn } from "@/lib/utils";
 
 /** Google Calendar "render" template URL built from the event's start/end times. */
@@ -58,6 +60,12 @@ const Home = () => {
               <span aria-hidden className="h-0.5 flex-1 bg-gradient-to-r from-signal via-pulse/60 to-transparent" />
             </div>
             <p className="mt-6 max-w-xl text-lg text-dim sm:text-xl">{event.tagline}</p>
+            {event.prize_summary && (
+              <Link to="/#prizes" className="mt-5 inline-flex items-center gap-2 rounded-full border border-signal/40 bg-signal/[0.08] px-4 py-1.5 font-mono text-[12px] uppercase tracking-[0.14em] text-signal transition-colors hover:bg-signal/15">
+                <Trophy className="h-3.5 w-3.5" />
+                {event.prize_summary}
+              </Link>
+            )}
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <ButtonLink to="/register" size="lg">
@@ -153,27 +161,54 @@ const Home = () => {
       {/* -------------------------------------------------------------- Prizes */}
       <section id="prizes" className="container scroll-mt-20 py-16 sm:py-24">
         <SectionTitle kicker="Prizes" title="What's on the line" />
-        <Panel glow className="mt-10 flex flex-col items-start gap-5 p-8 sm:flex-row sm:items-center sm:p-10">
-          <IconTile solid className="h-14 w-14">
-            <Trophy className="h-6 w-6" />
+        <Panel glow className="mt-10 flex flex-col items-start gap-6 p-8 sm:flex-row sm:items-center sm:p-10">
+          <IconTile solid className="h-16 w-16">
+            <Trophy className="h-7 w-7" />
           </IconTile>
           <div>
-            <p className="kicker text-dim">Prizes</p>
-            <p className="mt-1.5 font-display text-2xl font-extrabold text-ink sm:text-3xl">{event.prize_summary}</p>
-            {event.prize_detail && <p className="mt-1 text-dim">{event.prize_detail}</p>}
+            <p className="kicker text-dim">Cash prize pool</p>
+            <p className="mt-1.5 font-display text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
+              <GradientText>{event.prize_summary}</GradientText>
+            </p>
+            {event.prize_detail && <p className="mt-2 text-lg text-dim">{event.prize_detail}</p>}
           </div>
         </Panel>
       </section>
 
       {/* ------------------------------------------------------------ Partners */}
-      <section className="container py-16 sm:py-24">
-        <SectionTitle kicker="Partners" title="Presented with" />
-        <div className="mt-10 flex flex-wrap items-center gap-10">
-          <img src="/yci-transparent.png" alt="Young Coders Initiative" className="h-14 w-auto object-contain" />
-          <span aria-hidden className="h-10 w-px bg-line" />
-          <div className="flex items-center gap-3">
-            <img src="/bigred-logo.png" alt="Big Red Education" className="h-12 w-auto rounded object-contain" />
-            <span className="text-sm text-dim">{event.partner_name}</span>
+      <section id="partners" className="container scroll-mt-20 py-16 sm:py-24">
+        <SectionTitle kicker="Partners" title="Backed by great partners" lede="Impact Miami 2.0 is made possible by the organizations behind it." />
+        <div className="mt-10 grid gap-4 md:grid-cols-2">
+          {PARTNERS.map((p) => (
+            <div
+              key={p.name}
+              className={cn(
+                "relative flex items-center gap-6 rounded-2xl p-6 sm:p-8",
+                p.isNew ? "signal-border shadow-glow" : "border border-line bg-deck",
+              )}
+            >
+              <span className={cn("grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-2xl p-2 sm:h-28 sm:w-28", p.tile)}>
+                <img src={p.logo} alt={p.name} className="h-full w-full object-contain" />
+              </span>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge tone={p.isNew ? "signal" : "dim"}>Partner</Badge>
+                  {p.isNew && (
+                    <Badge tone="signal">
+                      <Led pulse className="h-1.5 w-1.5" /> New
+                    </Badge>
+                  )}
+                </div>
+                <p className="mt-3 font-display text-2xl font-extrabold tracking-[-0.02em] text-ink sm:text-3xl">{p.name}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 flex items-center gap-4 rounded-2xl border border-line bg-deck p-5 sm:p-6">
+          <img src="/yci-transparent.png" alt="Young Coders Initiative" className="h-12 w-auto object-contain" />
+          <div>
+            <p className="kicker">Presented by</p>
+            <p className="mt-1 font-display text-lg font-bold text-ink">Young Coders Initiative</p>
           </div>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { Logo } from "@/components/Logo";
 import { useEvent } from "@/lib/api";
 import { ARCHIVE_URL } from "@/lib/supabase";
 import { DEFAULT_EVENT } from "@/lib/defaults";
+import { PARTNERS } from "@/lib/partners";
 
 export const Footer = () => {
   const { data: event } = useEvent();
@@ -25,7 +26,9 @@ export const Footer = () => {
             <img src="/yci-transparent.png" alt="Young Coders Initiative" className="h-10 w-auto object-contain" />
             <div className="flex items-center gap-2 text-sm text-dim">
               <span>In partnership with</span>
-              <img src="/bigred-logo.png" alt="Big Red Education" className="h-8 w-auto rounded object-contain" />
+              {PARTNERS.map((p) => (
+                <img key={p.name} src={p.logo} alt={p.name} className="h-8 w-8 rounded object-contain" />
+              ))}
             </div>
           </div>
         </div>

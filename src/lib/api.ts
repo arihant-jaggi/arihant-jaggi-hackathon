@@ -22,6 +22,7 @@ import type {
 // Anything an operator has changed no longer matches and is shown as stored.
 const SEEDED_START = new Date("2026-10-25T09:00:00-04:00").getTime();
 const SEEDED_TIMES = "9:00 AM to 5:30 PM";
+const SEEDED_PRIZE = "Huge cash prize pool";
 // Earlier default taglines, replaced by the current one until an operator sets their own.
 const SUPERSEDED_TAGLINES = [
   "A one-day youth hackathon building tech for Miami.",
@@ -51,6 +52,10 @@ export const withCurrentHours = (event: EventRow): EventRow => {
     out = { ...out, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at };
   }
   if (event.tagline && SUPERSEDED_TAGLINES.includes(event.tagline)) out = { ...out, tagline: DEFAULT_EVENT.tagline };
+  if (event.prize_summary === SEEDED_PRIZE) {
+    out = { ...out, prize_summary: DEFAULT_EVENT.prize_summary, prize_detail: DEFAULT_EVENT.prize_detail };
+  }
+  if (event.partner_name === "Big Red Education") out = { ...out, partner_name: DEFAULT_EVENT.partner_name };
   return scrub(out, ["name"]);
 };
 
@@ -59,12 +64,18 @@ export const withCurrentSchedule = (rows: ScheduleItemRow[]): ScheduleItemRow[] 
     ? DEFAULT_SCHEDULE.map((r) => ({ ...r, event_id: rows[0].event_id }))
     : rows.map((r) => scrub(r, ["title"]));
 
+// Seeded FAQ wording that has since changed: [old, new].
+const FAQ_UPDATES: [string, string][] = [
+  [SEEDED_TIMES, "9:30 AM to 5:30 PM"],
+  ["There is a cash prize pool, plus awards for winning teams.", "A $1,500 cash prize pool so far, plus awards for winning teams."],
+  ["in partnership with Big Red Education.", "in partnership with Big Red Education and Founders Future."],
+];
+
 const SEEDED_REGISTER_ANSWER = "the Register button on this site goes live \u2014 one teammate registers";
 
 export const withCurrentFaqTimes = (rows: FaqItemRow[]): FaqItemRow[] =>
   rows.map((f) => {
-    const answer = f.answer
-      .replace(SEEDED_TIMES, "9:30 AM to 5:30 PM")
+    const answer = FAQ_UPDATES.reduce((text, [from, to]) => text.replace(from, to), f.answer)
       .replace(SEEDED_REGISTER_ANSWER, "the Register button on this site goes live, and one teammate registers");
     return scrub(answer === f.answer ? f : { ...f, answer }, ["question"]);
   });

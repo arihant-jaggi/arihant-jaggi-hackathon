@@ -26,6 +26,11 @@ share one Supabase project (table names don't collide) or use two.
    fresh Supabase project works too if you'd rather keep them fully separate.
    Then run `supabase/migrations/20260926000000_schedule_and_hours.sql`, which
    sets the 9:30 AM – 5:30 PM hours and loads the run of show.
+   Then run `supabase/migrations/20261013000000_prompt_release.sql` **before
+   adding any challenge tracks**: it hides tracks from the public until an
+   operator clicks **Release prompts** in `/ops` → Content → Tracks. This repo
+   is public, so prompt text is never committed; enter it in `/ops` or the
+   SQL editor only.
 
 2. **Create the first operator.**
    - Sign up at `/ops` (magic link), or create a user directly in

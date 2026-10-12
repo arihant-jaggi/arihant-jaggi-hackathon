@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
-import { Button, Field, Input, Kicker, Panel, Textarea } from "@/components/ui";
+import { EyeOff, Plus, Rocket, Trash2 } from "lucide-react";
+import { Button, Field, Input, Kicker, Led, Panel, Textarea } from "@/components/ui";
 import { EmptyState } from "@/components/ops/EmptyState";
 import { cn } from "@/lib/utils";
 import {
@@ -15,6 +15,7 @@ import {
   useDeleteTrack,
   useOpsAnnouncements,
   useOpsEvent,
+  useUpdateEvent,
   useOpsFaqs,
   useOpsSchedule,
   useOpsTracks,
@@ -23,12 +24,12 @@ import {
   useUpdateScheduleItem,
   useUpdateTrack,
 } from "@/lib/ops";
-import { fromLocalInput, toLocalInput } from "@/lib/format";
-import type { AnnouncementRow, FaqItemRow, ScheduleItemRow, TrackRow } from "@/lib/types";
+import { formatDateTime, fromLocalInput, toLocalInput } from "@/lib/format";
+import type { AnnouncementRow, EventRow, FaqItemRow, ScheduleItemRow, TrackRow } from "@/lib/types";
 
 type Tab = "tracks" | "schedule" | "faq" | "announcements";
 const TABS: { key: Tab; label: string }[] = [
-  { key: "tracks", label: "Tracks" },
+  { key: "tracks", label: "Tracks (prompts)" },
   { key: "schedule", label: "Schedule" },
   { key: "faq", label: "FAQ" },
   { key: "announcements", label: "Announcements" },
@@ -52,7 +53,56 @@ const Row = ({ children, onDelete }: { children: ReactNode; onDelete: () => void
 // Tracks
 // ---------------------------------------------------------------------------
 
-const TracksTab = ({ eventId }: { eventId: string }) => {
+/**
+ * Release control for the challenge prompts. Until released, the database
+ * hides tracks from the public and the homepage shows a locked teaser.
+ */
+const PromptRelease = ({ event, trackCount }: { event: EventRow; trackCount: number }) => {
+  const updateEvent = useUpdateEvent();
+  const released = !!event.prompts_released;
+
+  const setReleased = (next: boolean) => {
+    const message = next
+      ? `Release all ${trackCount} prompt${trackCount === 1 ? "" : "s"} now? They appear on the public site immediately and teams can pick them when registering.`
+      : "Hide the prompts again? They disappear from the public site immediately.";
+    if (!window.confirm(message)) return;
+    updateEvent.mutate(
+      { id: event.id, prompts_released: next, prompts_released_at: next ? new Date().toISOString() : null },
+      {
+        onSuccess: () => toast.success(next ? "Prompts released. They're live on the site." : "Prompts hidden."),
+        onError: (e) => toast.error(e.message),
+      },
+    );
+  };
+
+  return (
+    <Panel className={cn("flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between", released && "signal-border")}>
+      <div>
+        <div className="flex items-center gap-2">
+          <Led tone={released ? "signal" : "warn"} pulse={released} />
+          <p className="font-mono text-[12px] uppercase tracking-[0.16em] text-ink">{released ? "Prompts are live" : "Prompts are hidden"}</p>
+        </div>
+        <p className="mt-1.5 text-sm text-dim">
+          {released
+            ? `Released ${formatDateTime(event.prompts_released_at)}. Everyone can see the tracks on the homepage and pick one when registering.`
+            : "Only operators can see the tracks. The homepage shows a locked teaser until you release them."}
+        </p>
+      </div>
+      {released ? (
+        <Button variant="danger" size="sm" onClick={() => setReleased(false)} disabled={updateEvent.isPending}>
+          <EyeOff className="h-3.5 w-3.5" /> Hide prompts
+        </Button>
+      ) : (
+        <Button onClick={() => setReleased(true)} disabled={updateEvent.isPending || trackCount === 0} title={trackCount === 0 ? "Add tracks first" : undefined}>
+          <Rocket className="h-4 w-4" /> Release prompts
+        </Button>
+      )}
+    </Panel>
+  );
+};
+
+const TracksTab = ({ event }: { event: EventRow }) => {
+  const eventId = event.id;
   const { data: tracks, isLoading } = useOpsTracks(eventId);
   const create = useCreateTrack();
   const update = useUpdateTrack();
@@ -66,6 +116,7 @@ const TracksTab = ({ eventId }: { eventId: string }) => {
 
   return (
     <div className="space-y-3">
+      <PromptRelease event={event} trackCount={tracks?.length ?? 0} />
       <div className="flex justify-end">
         <Button size="sm" onClick={addTrack}>
           <Plus className="h-3.5 w-3.5" /> Add track
@@ -77,7 +128,7 @@ const TracksTab = ({ eventId }: { eventId: string }) => {
         tracks.map((t: TrackRow) => (
           <Row key={t.id} onDelete={() => remove.mutate(t.id, { onSuccess: () => toast.success("Track deleted.") })}>
             <Input defaultValue={t.title} onBlur={(e) => e.target.value !== t.title && update.mutate({ id: t.id, title: e.target.value })} placeholder="Title" />
-            <Input defaultValue={t.summary ?? ""} onBlur={(e) => update.mutate({ id: t.id, summary: e.target.value || null })} placeholder="Summary" />
+            <Textarea defaultValue={t.summary ?? ""} onBlur={(e) => update.mutate({ id: t.id, summary: e.target.value || null })} placeholder="Prompt text shown on the site" />
             <div className="flex items-center gap-2">
               <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-faint">Sort</span>
               <Input
@@ -245,7 +296,7 @@ const Content = () => {
         ))}
       </div>
       <Panel className="p-5">
-        {tab === "tracks" && <TracksTab eventId={event.id} />}
+        {tab === "tracks" && <TracksTab event={event} />}
         {tab === "schedule" && <ScheduleTab eventId={event.id} />}
         {tab === "faq" && <FaqTab eventId={event.id} />}
         {tab === "announcements" && <AnnouncementsTab eventId={event.id} />}

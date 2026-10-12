@@ -32,6 +32,9 @@ export interface EventRow {
   max_team_size: number;
   max_teams: number | null;
   is_current: boolean;
+  /** Challenge prompts (tracks) visible to the public. 20261013000000. */
+  prompts_released?: boolean;
+  prompts_released_at?: string | null;
   created_at?: string;
   updated_at?: string;
 }

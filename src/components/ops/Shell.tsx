@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { LogOut, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Led } from "@/components/ui";
@@ -10,6 +10,7 @@ import { registrationLabel } from "@/lib/format";
 const NAV = [
   { to: "/ops/teams", label: "Teams" },
   { to: "/ops/check-in", label: "Check-in" },
+  { to: "/ops/prompts", label: "Prompts" },
   { to: "/ops/event", label: "Event" },
   { to: "/ops/content", label: "Content" },
   { to: "/ops/operators", label: "Operators" },
@@ -65,6 +66,15 @@ export const Shell = ({ event, operatorEmail, onSignOut, children }: { event: Ev
           </span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
+          {event && typeof event.prompts_released === "boolean" && (
+            <Link
+              to="/ops/prompts"
+              className="hidden items-center gap-1.5 rounded-md border border-line px-2 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-dim hover:border-signal hover:text-signal sm:inline-flex"
+            >
+              <Led tone={event.prompts_released ? "signal" : "warn"} pulse={event.prompts_released} />
+              {event.prompts_released ? "Prompts live" : "Prompts hidden"}
+            </Link>
+          )}
           {event && (
             <span className="hidden items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-dim sm:inline-flex">
               <Led tone={REG_TONE[event.registration_status] ?? "dim"} pulse={event.registration_status === "open"} />

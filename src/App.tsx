@@ -15,6 +15,7 @@ const OpsTeamDetail = lazy(() => import("@/pages/ops/TeamDetail"));
 const OpsCheckIn = lazy(() => import("@/pages/ops/CheckIn"));
 const OpsEvent = lazy(() => import("@/pages/ops/EventSettings"));
 const OpsContent = lazy(() => import("@/pages/ops/Content"));
+const OpsPrompts = lazy(() => import("@/pages/ops/Prompts"));
 const OpsOperators = lazy(() => import("@/pages/ops/Operators"));
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } });
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="check-in" element={<OpsCheckIn />} />
             <Route path="event" element={<OpsEvent />} />
             <Route path="content" element={<OpsContent />} />
+            <Route path="prompts" element={<OpsPrompts />} />
             <Route path="operators" element={<OpsOperators />} />
           </Route>
           <Route path="/admin" element={<Navigate to="/ops" replace />} />

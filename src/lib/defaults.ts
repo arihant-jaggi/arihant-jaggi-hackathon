@@ -19,7 +19,7 @@ export const DEFAULT_EVENT: EventRow = {
   venue_address: "592 NE 60th Street, Miami, FL 33137",
   venue_map_url: "https://www.google.com/maps/search/?api=1&query=592+NE+60th+Street+Miami+FL+33137",
   partner_name: "Big Red Education and Founders Future",
-  prize_summary: "$1,500 cash prize pool",
+  prize_summary: "$2,000 cash prize pool",
   prize_detail: "And counting. Plus awards for winners.",
   contact_email: "contact@youngcodersmiami.org",
   registration_status: "coming_soon",
@@ -92,7 +92,7 @@ export const DEFAULT_FAQS: FaqItemRow[] = [
       "Registration is coming soon. When it opens, the Register button on this site goes live, and one teammate registers the whole team.",
     sort_order: 20,
   },
-  { id: "f3", event_id: "local", question: "What can we win?", answer: "A $1,500 cash prize pool so far, plus awards for winning teams.", sort_order: 30 },
+  { id: "f3", event_id: "local", question: "What can we win?", answer: "A $2,000 cash prize pool, plus awards for winning teams.", sort_order: 30 },
   {
     id: "f4",
     event_id: "local",

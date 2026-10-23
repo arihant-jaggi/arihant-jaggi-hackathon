@@ -13,6 +13,7 @@ const SECTIONS = [
   { href: "/#prizes", label: "Prizes" },
   { href: "/#faq", label: "FAQ" },
   { href: "/judges", label: "Judges" },
+  { href: "/rubric", label: "Rubric" },
   { href: "/#past", label: "Past events" },
 ];
 

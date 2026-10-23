@@ -1,6 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render as rtlRender, screen } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import { TracksSection } from "./TracksSection";
 import type { TrackRow } from "@/lib/types";
+
+const render = (ui: ReactElement) => rtlRender(<MemoryRouter>{ui}</MemoryRouter>);
 
 const track = (n: number): TrackRow => ({
   id: `t${n}`,

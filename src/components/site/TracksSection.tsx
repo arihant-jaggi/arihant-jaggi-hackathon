@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Bot, Lock, Medal, Route } from "lucide-react";
 import { Badge, Led, SectionTitle } from "@/components/ui";
 import type { TrackRow } from "@/lib/types";
@@ -75,6 +76,11 @@ export const TracksSection = ({ tracks, released }: { tracks: TrackRow[]; releas
             <div>
               <p className="font-display text-base font-bold text-ink">{title}</p>
               <p className="mt-1 text-sm text-dim">{body}</p>
+              {title === "One rubric" && (
+                <Link to="/rubric" className="mt-2 inline-block font-mono text-[11px] uppercase tracking-[0.14em] text-signal hover:underline">
+                  See the rubric →
+                </Link>
+              )}
             </div>
           </div>
         ))}

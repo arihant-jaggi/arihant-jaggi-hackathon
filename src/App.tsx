@@ -6,6 +6,7 @@ import SiteLayout from "@/components/site/SiteLayout";
 import Home from "@/pages/public/Home";
 import Register from "@/pages/public/Register";
 import Judges from "@/pages/public/Judges";
+import Rubric from "@/pages/public/Rubric";
 import NotFound from "@/pages/public/NotFound";
 
 // The operator console is its own bundle; public visitors never download it.
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/judges" element={<Judges />} />
+            <Route path="/rubric" element={<Rubric />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="/ops" element={<OpsLayout />}>

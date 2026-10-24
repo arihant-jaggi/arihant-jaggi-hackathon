@@ -9,6 +9,7 @@ import type {
   RegisterMemberInput,
   RegisterTeamInput,
   ScheduleItemRow,
+  SubmitProjectInput,
   TrackRow,
 } from "./types";
 
@@ -212,3 +213,31 @@ export const useRegisterTeam = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["event-stats"] }),
   });
 };
+
+// ---------------------------------------------------------------------------
+// Project submissions
+// ---------------------------------------------------------------------------
+
+const SUBMIT_ERRORS: Record<string, string> = {
+  EVENT_NOT_FOUND: "We couldn't find this event. Please refresh and try again.",
+  SUBMISSIONS_CLOSED: "Submissions are closed right now.",
+  TEAM_NAME_REQUIRED: "Enter your team name.",
+  TITLE_REQUIRED: "Give your project a title.",
+  DESCRIPTION_REQUIRED: "Add a short description.",
+  LINK_REQUIRED: "Add at least one link: GitHub, live demo, or slides.",
+  LINK_INVALID: "Links must be full URLs starting with https://",
+};
+
+export const submitErrorMessage = (raw: string) => {
+  const key = Object.keys(SUBMIT_ERRORS).find((k) => raw.includes(k));
+  return key ? SUBMIT_ERRORS[key] : "Something went wrong. Please try again.";
+};
+
+export const useSubmitProject = () =>
+  useMutation({
+    mutationFn: async (input: SubmitProjectInput) => {
+      const { data, error } = await requireSupabase().rpc("submit_project", { p_event_slug: EVENT_SLUG, p_payload: input });
+      if (error) throw new Error(submitErrorMessage(error.message));
+      return data as string;
+    },
+  });

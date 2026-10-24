@@ -7,6 +7,7 @@ import Home from "@/pages/public/Home";
 import Register from "@/pages/public/Register";
 import Judges from "@/pages/public/Judges";
 import Rubric from "@/pages/public/Rubric";
+import Submit from "@/pages/public/Submit";
 import NotFound from "@/pages/public/NotFound";
 
 // The operator console is its own bundle; public visitors never download it.
@@ -17,6 +18,7 @@ const OpsCheckIn = lazy(() => import("@/pages/ops/CheckIn"));
 const OpsEvent = lazy(() => import("@/pages/ops/EventSettings"));
 const OpsContent = lazy(() => import("@/pages/ops/Content"));
 const OpsPrompts = lazy(() => import("@/pages/ops/Prompts"));
+const OpsSubmissions = lazy(() => import("@/pages/ops/Submissions"));
 const OpsOperators = lazy(() => import("@/pages/ops/Operators"));
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } } });
@@ -38,6 +40,7 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/judges" element={<Judges />} />
             <Route path="/rubric" element={<Rubric />} />
+            <Route path="/submit" element={<Submit />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path="/ops" element={<OpsLayout />}>
@@ -48,6 +51,7 @@ const App = () => (
             <Route path="event" element={<OpsEvent />} />
             <Route path="content" element={<OpsContent />} />
             <Route path="prompts" element={<OpsPrompts />} />
+            <Route path="submissions" element={<OpsSubmissions />} />
             <Route path="operators" element={<OpsOperators />} />
           </Route>
           <Route path="/admin" element={<Navigate to="/ops" replace />} />

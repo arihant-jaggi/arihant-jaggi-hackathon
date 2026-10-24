@@ -11,6 +11,7 @@ const NAV = [
   { to: "/ops/teams", label: "Teams" },
   { to: "/ops/check-in", label: "Check-in" },
   { to: "/ops/prompts", label: "Prompts" },
+  { to: "/ops/submissions", label: "Submissions" },
   { to: "/ops/event", label: "Event" },
   { to: "/ops/content", label: "Content" },
   { to: "/ops/operators", label: "Operators" },

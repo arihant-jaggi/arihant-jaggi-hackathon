@@ -32,6 +32,8 @@ export interface EventRow {
   max_team_size: number;
   max_teams: number | null;
   is_current: boolean;
+  /** Project submissions accepted on /submit. 20261024000000. */
+  submissions_open?: boolean;
   /** Challenge prompts (tracks) visible to the public. 20261013000000. */
   prompts_released?: boolean;
   prompts_released_at?: string | null;
@@ -153,4 +155,29 @@ export interface RegisterMemberInput {
   guardian_name?: string;
   guardian_email?: string;
   guardian_phone?: string;
+}
+
+export interface SubmissionRow {
+  id: string;
+  event_id: string;
+  team_name: string;
+  project_title: string;
+  description: string;
+  track_id: string | null;
+  track_title: string | null;
+  github_url: string | null;
+  demo_url: string | null;
+  slides_url: string | null;
+  created_at: string;
+}
+
+export interface SubmitProjectInput {
+  team_name: string;
+  project_title: string;
+  description: string;
+  track_id?: string;
+  track_title?: string;
+  github_url?: string;
+  demo_url?: string;
+  slides_url?: string;
 }

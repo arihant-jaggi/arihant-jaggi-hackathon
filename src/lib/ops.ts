@@ -10,6 +10,7 @@ import type {
   FaqItemRow,
   OperatorRow,
   ScheduleItemRow,
+  SubmissionRow,
   TeamMemberRow,
   TeamRow,
   TeamStatus,
@@ -506,3 +507,30 @@ export const participantEmails = (teams: TeamWithMembers[]): string[] => {
 /** Gmail compose link with everyone in BCC (so participants can't see each other). */
 export const gmailBccUrl = (emails: string[], subject = "") =>
   `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(emails.join(","))}&su=${encodeURIComponent(subject)}`;
+
+// ---------------------------------------------------------------------------
+// Project submissions
+// ---------------------------------------------------------------------------
+
+export const useSubmissions = (eventId: string | undefined) =>
+  useQuery({
+    queryKey: ["ops-submissions", eventId],
+    enabled: !!eventId,
+    refetchInterval: 30_000,
+    queryFn: async (): Promise<SubmissionRow[]> => {
+      const { data, error } = await requireSupabase().from("submissions").select("*").eq("event_id", eventId).order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data as SubmissionRow[]) ?? [];
+    },
+  });
+
+export const useDeleteSubmission = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await requireSupabase().from("submissions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["ops-submissions"] }),
+  });
+};

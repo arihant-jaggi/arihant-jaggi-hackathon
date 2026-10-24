@@ -309,7 +309,7 @@ const Register = () => {
                 </div>
 
                 <div className="border-t border-line pt-5">
-                  <p className="kicker mb-4 text-dim">Parent / guardian &mdash; required for students under 18</p>
+                  <p className="kicker mb-4 text-dim">Parent / guardian: required for students under 18</p>
                   <div className="grid gap-5 sm:grid-cols-3">
                     <Field label="Guardian name" htmlFor={`${member.key}-gname`} error={errors[`${i}.guardian_name`]}>
                       <Input id={`${member.key}-gname`} value={member.guardian_name} onChange={(e) => updateMember(member.key, { guardian_name: e.target.value })} required />

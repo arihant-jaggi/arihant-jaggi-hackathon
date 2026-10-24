@@ -11,7 +11,7 @@ export const DEFAULT_EVENT: EventRow = {
   tagline: "One day. One team. One community. Build the AI agents Miami needs.",
   description:
     "Young Coders Initiative presents Impact Miami 2.0, a one-day hackathon where student teams design, build, and pitch projects that make a real difference for Miami communities.",
-  starts_at: "2026-10-25T09:30:00-04:00",
+  starts_at: "2026-10-25T09:00:00-04:00",
   ends_at: "2026-10-25T17:30:00-04:00",
   timezone: "America/New_York",
   venue_name: "The Cushman School",
@@ -33,7 +33,7 @@ export const DEFAULT_EVENT: EventRow = {
 
 const LOCATION = "The Cushman School, Middle School";
 
-// Run of show: Spring 2026's blocks and wording, on the 9:30–5:30 day.
+// Run of show: Spring 2026's blocks and wording, on the 9:00 to 5:30 day.
 // Mirrors supabase/migrations/20260926000000_schedule_and_hours.sql.
 const block = (
   n: number,
@@ -55,7 +55,7 @@ const block = (
 });
 
 export const DEFAULT_SCHEDULE: ScheduleItemRow[] = [
-  block(1, "09:30", "10:00", "Introduction and Commencement",
+  block(1, "09:00", "10:00", "Introduction and Commencement",
     "Welcome to the hackathon. Opening remarks, formal introduction of the event, and a walkthrough of the challenge prompt, rules, and expectations for the day.",
     "Grab your badge, connect to WiFi, and settle in before we kick things off."),
   block(2, "10:00", "12:30", "Project Building: Morning Session",
@@ -81,7 +81,7 @@ export const DEFAULT_FAQS: FaqItemRow[] = [
     event_id: "local",
     question: "When and where is Impact Miami 2.0?",
     answer:
-      "Sunday, October 25, 2026, from 9:30 AM to 5:30 PM at The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137.",
+      "Sunday, October 25, 2026, from 9:00 AM to 5:30 PM at The Cushman School (Middle School), 592 NE 60th Street, Miami, FL 33137.",
     sort_order: 10,
   },
   {

@@ -25,7 +25,7 @@ share one Supabase project (table names don't collide) or use two.
    `event_public_stats()`), so the archived site's tables are untouched. A
    fresh Supabase project works too if you'd rather keep them fully separate.
    Then run `supabase/migrations/20260926000000_schedule_and_hours.sql`, which
-   sets the 9:30 AM – 5:30 PM hours and loads the run of show.
+   sets the hours (then `20261025000000_start_at_9.sql` moves the start to 9:00 AM) and loads the run of show.
    Then run `supabase/migrations/20261013000000_prompt_release.sql` **before
    adding any challenge tracks**: it hides tracks from the public until an
    operator clicks **Release prompts** in `/ops` → Content → Tracks. This repo

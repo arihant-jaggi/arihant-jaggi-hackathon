@@ -481,3 +481,28 @@ export const filterTeams = (teams: TeamWithMembers[], filters: TeamFilters): Tea
     return true;
   });
 };
+
+// ---------------------------------------------------------------------------
+// Email blast helpers
+// ---------------------------------------------------------------------------
+
+const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+/**
+ * Unique participant emails for the given teams: team members only, never
+ * parent/guardian emails. Lowercased, trimmed, invalid entries dropped.
+ */
+export const participantEmails = (teams: TeamWithMembers[]): string[] => {
+  const seen = new Set<string>();
+  for (const team of teams) {
+    for (const m of team.team_members ?? []) {
+      const email = (m.email ?? "").trim().toLowerCase();
+      if (EMAIL_RE.test(email)) seen.add(email);
+    }
+  }
+  return [...seen].sort();
+};
+
+/** Gmail compose link with everyone in BCC (so participants can't see each other). */
+export const gmailBccUrl = (emails: string[], subject = "") =>
+  `https://mail.google.com/mail/?view=cm&fs=1&bcc=${encodeURIComponent(emails.join(","))}&su=${encodeURIComponent(subject)}`;

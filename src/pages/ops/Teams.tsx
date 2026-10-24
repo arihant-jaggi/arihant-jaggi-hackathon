@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Download, Plus, Search } from "lucide-react";
+import { Download, ExternalLink, Mail, Plus, Search } from "lucide-react";
 import { Button, Field, Input, Kicker, Led, Select } from "@/components/ui";
 import { StatTile } from "@/components/ops/StatTile";
 import { StatusBadge } from "@/components/ops/StatusBadge";
 import { DataTable, type Column } from "@/components/ops/DataTable";
 import { EmptyState } from "@/components/ops/EmptyState";
 import { Modal } from "@/components/ops/Modal";
-import { filterTeams, teamStats, teamsToCsv, useCreateTeam, useOpsEvent, useOpsTracks, useTeams, useUpdateTeam, type TeamFilters } from "@/lib/ops";
+import { CopyButton } from "@/components/ops/CopyButton";
+import { filterTeams, gmailBccUrl, participantEmails, teamStats, teamsToCsv, useCreateTeam, useOpsEvent, useOpsTracks, useTeams, useUpdateTeam, type TeamFilters } from "@/lib/ops";
 import { formatDateTime } from "@/lib/format";
 import { TEAM_STATUSES, type TeamStatus, type TeamWithMembers } from "@/lib/types";
 
@@ -76,6 +77,45 @@ const AddTeamModal = ({ eventId, trackOptions, onClose }: { eventId: string; tra
   );
 };
 
+// Gmail and most browsers handle compose links up to roughly 8,000 characters.
+const MAX_LINK = 7500;
+
+/** Copy-ready participant emails (no guardians) for the teams currently shown. */
+const EmailParticipantsModal = ({ teams, filters, onClose }: { teams: TeamWithMembers[]; filters: TeamFilters; onClose: () => void }) => {
+  const emails = useMemo(() => participantEmails(teams), [teams]);
+  const list = emails.join(", ");
+  const url = gmailBccUrl(emails, "Impact Miami 2.0");
+  const filtered = filters.status !== "all" || filters.track !== "all" || filters.checkedIn !== "all" || !!filters.q;
+  return (
+    <Modal title="Email participants" onClose={onClose} wide>
+      <div className="space-y-4">
+        <p className="text-sm text-dim">
+          <b className="text-ink">{emails.length}</b> participant email{emails.length === 1 ? "" : "s"} from <b className="text-ink">{teams.length}</b> team
+          {teams.length === 1 ? "" : "s"}
+          {filtered ? " matching the current filters" : ""}. Team members only: parent and guardian emails are left out.
+        </p>
+        <textarea readOnly value={list} aria-label="Participant emails" className="h-32 w-full rounded-lg border border-line bg-rail p-3 font-mono text-xs text-ink" />
+        <div className="flex flex-wrap items-center gap-2">
+          <CopyButton value={list} label="Copy emails" />
+          {url.length <= MAX_LINK ? (
+            <a href={url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-md border border-line-strong px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-signal hover:text-signal">
+              <ExternalLink className="h-3.5 w-3.5" /> Open in Gmail (BCC)
+            </a>
+          ) : (
+            <span className="text-xs text-faint">Too many addresses for a Gmail link. Use Copy emails instead.</span>
+          )}
+        </div>
+        <ol className="list-decimal space-y-1 pl-5 text-sm text-dim">
+          <li>Copy the emails (or open Gmail, which fills them in for you).</li>
+          <li>Paste them into <b className="text-ink">BCC</b>, not To or CC, so participants don't see each other's addresses.</li>
+          <li>Attach your document, write your message, and send.</li>
+        </ol>
+        <p className="text-xs text-faint">Tip: set the status filter to Approved first to email only accepted teams.</p>
+      </div>
+    </Modal>
+  );
+};
+
 const Teams = () => {
   const navigate = useNavigate();
   const { data: event } = useOpsEvent();
@@ -87,6 +127,7 @@ const Teams = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showAdd, setShowAdd] = useState(false);
   const [bulkStatus, setBulkStatus] = useState<TeamStatus | "">("");
+  const [showEmail, setShowEmail] = useState(false);
 
   const trackTitle = useMemo(() => new Map((tracks ?? []).map((t) => [t.id, t.title])), [tracks]);
   const filtered = useMemo(() => filterTeams(teams ?? [], filters), [teams, filters]);
@@ -149,6 +190,9 @@ const Teams = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Kicker>Teams</Kicker>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowEmail(true)} disabled={!filtered.length}>
+            <Mail className="h-3.5 w-3.5" /> Email participants
+          </Button>
           <Button variant="outline" size="sm" onClick={() => teams && downloadCsv(teams)} disabled={!teams?.length}>
             <Download className="h-3.5 w-3.5" /> Export CSV
           </Button>
@@ -238,6 +282,7 @@ const Teams = () => {
         />
       )}
 
+      {showEmail && <EmailParticipantsModal teams={filtered} filters={filters} onClose={() => setShowEmail(false)} />}
       {showAdd && event && <AddTeamModal eventId={event.id} trackOptions={tracks ?? []} onClose={() => setShowAdd(false)} />}
     </div>
   );

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { filterTeams, teamStats, teamsToCsv } from "./ops";
-import type { TeamWithMembers } from "./types";
+import { filterTeams, gmailBccUrl, participantEmails, teamStats, teamsToCsv } from "./ops";
+import type { TeamMemberRow, TeamWithMembers } from "./types";
 
 const team = (overrides: Partial<TeamWithMembers>): TeamWithMembers => ({
   id: "t1",
@@ -148,5 +148,32 @@ describe("teamStats", () => {
       hackers: 3,
       checkedIn: 2,
     });
+  });
+});
+
+describe("participantEmails", () => {
+  const team = (id: string, members: Partial<TeamMemberRow>[]) =>
+    ({ id, name: id, team_members: members.map((m, i) => ({ id: `${id}-${i}`, ...m })) }) as unknown as TeamWithMembers;
+
+  it("collects members only, never guardian emails", () => {
+    const emails = participantEmails([
+      team("a", [{ email: "Kid@school.org", guardian_email: "parent@home.com" }, { email: "two@school.org", guardian_email: "p2@home.com" }]),
+    ]);
+    expect(emails).toEqual(["kid@school.org", "two@school.org"]);
+    expect(emails.join(",")).not.toContain("home.com");
+  });
+
+  it("dedupes across teams and drops blanks or invalid entries", () => {
+    const emails = participantEmails([
+      team("a", [{ email: " dup@x.org " }, { email: "" }, { email: "not-an-email" }]),
+      team("b", [{ email: "DUP@x.org" }, { email: "new@x.org" }]),
+    ]);
+    expect(emails).toEqual(["dup@x.org", "new@x.org"]);
+  });
+
+  it("builds a Gmail link with everyone in BCC", () => {
+    const url = gmailBccUrl(["a@x.org", "b@x.org"], "Hi");
+    expect(url).toContain("bcc=a%40x.org%2Cb%40x.org");
+    expect(url).toContain("su=Hi");
   });
 });

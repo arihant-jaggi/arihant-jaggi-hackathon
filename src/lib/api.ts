@@ -17,12 +17,14 @@ import type {
 // Public reads. Each falls back to the flyer defaults with no backend.
 // ---------------------------------------------------------------------------
 
-// The first migration seeded a 9:00 start, a single "Hack day" block and a
-// 9:00 FAQ answer. Until 20260926000000_schedule_and_hours.sql runs (or an
-// operator edits these in /ops), show the current 9:30-5:30 content instead.
+// The first migration seeded a single "Hack day" block at 9:00, and
+// 20260926000000_schedule_and_hours.sql later moved the start to 9:30. The day
+// starts at 9:00, so until 20261025000000_start_at_9.sql runs (or an operator
+// edits these in /ops), show the current 9:00-5:30 content instead.
 // Anything an operator has changed no longer matches and is shown as stored.
 const SEEDED_START = new Date("2026-10-25T09:00:00-04:00").getTime();
-const SEEDED_TIMES = "9:00 AM to 5:30 PM";
+const SUPERSEDED_START = new Date("2026-10-25T09:30:00-04:00").getTime();
+const SUPERSEDED_TIMES = "9:30 AM to 5:30 PM";
 // Earlier prize wording, replaced by the current default until an operator sets their own.
 const SUPERSEDED_PRIZES = ["Huge cash prize pool", "$1,500 cash prize pool"];
 // Earlier default taglines, replaced by the current one until an operator sets their own.
@@ -50,7 +52,7 @@ const scrub = <T extends object>(row: T, titleKeys: (keyof T)[] = []): T => {
 
 export const withCurrentHours = (event: EventRow): EventRow => {
   let out = event;
-  if (event.starts_at && new Date(event.starts_at).getTime() === SEEDED_START) {
+  if (event.starts_at && new Date(event.starts_at).getTime() === SUPERSEDED_START) {
     out = { ...out, starts_at: DEFAULT_EVENT.starts_at, ends_at: DEFAULT_EVENT.ends_at };
   }
   if (event.tagline && SUPERSEDED_TAGLINES.includes(event.tagline)) out = { ...out, tagline: DEFAULT_EVENT.tagline };
@@ -64,11 +66,18 @@ export const withCurrentHours = (event: EventRow): EventRow => {
 export const withCurrentSchedule = (rows: ScheduleItemRow[]): ScheduleItemRow[] =>
   rows.length === 1 && rows[0].title === "Hack day" && new Date(rows[0].starts_at).getTime() === SEEDED_START
     ? DEFAULT_SCHEDULE.map((r) => ({ ...r, event_id: rows[0].event_id }))
-    : rows.map((r) => scrub(r, ["title"]));
+    : rows.map((r) =>
+        scrub(
+          r.title === DEFAULT_SCHEDULE[0].title && new Date(r.starts_at).getTime() === SUPERSEDED_START
+            ? { ...r, starts_at: DEFAULT_SCHEDULE[0].starts_at }
+            : r,
+          ["title"],
+        ),
+      );
 
 // Seeded FAQ wording that has since changed: [old, new].
 const FAQ_UPDATES: [string, string][] = [
-  [SEEDED_TIMES, "9:30 AM to 5:30 PM"],
+  [SUPERSEDED_TIMES, "9:00 AM to 5:30 PM"],
   ["There is a cash prize pool, plus awards for winning teams.", "A $2,000 cash prize pool, plus awards for winning teams."],
   ["A $1,500 cash prize pool so far, plus awards for winning teams.", "A $2,000 cash prize pool, plus awards for winning teams."],
   ["in partnership with Big Red Education.", "in partnership with Big Red Education and Founders Future."],

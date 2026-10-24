@@ -16,8 +16,17 @@ const seededHackDay: ScheduleItemRow = {
 };
 
 describe("seed fallbacks", () => {
-  it("moves the seeded 9:00 start to 9:30", () => {
-    expect(withCurrentHours(seededEvent).starts_at).toBe(DEFAULT_EVENT.starts_at);
+  it("moves the superseded 9:30 start back to 9:00", () => {
+    const at930 = { ...seededEvent, starts_at: "2026-10-25T13:30:00+00:00" };
+    expect(withCurrentHours(at930).starts_at).toBe(DEFAULT_EVENT.starts_at);
+    expect(new Date(DEFAULT_EVENT.starts_at).getTime()).toBe(new Date(seededEvent.starts_at).getTime());
+  });
+
+  it("moves the 9:30 opening block to 9:00 and leaves the rest", () => {
+    const rows = DEFAULT_SCHEDULE.map((r, i) => (i === 0 ? { ...r, starts_at: "2026-10-25T13:30:00+00:00" } : r));
+    const out = withCurrentSchedule(rows);
+    expect(out[0].starts_at).toBe(DEFAULT_SCHEDULE[0].starts_at);
+    expect(out.slice(1)).toEqual(DEFAULT_SCHEDULE.slice(1));
   });
 
   it("swaps the seeded tagline and keeps an edited one", () => {
@@ -48,11 +57,11 @@ describe("seed fallbacks", () => {
 
   it("updates the seeded FAQ hours and leaves others alone", () => {
     const faqs: FaqItemRow[] = [
-      { id: "f1", event_id: "e1", question: "When?", answer: "Sunday, from 9:00 AM to 5:30 PM at Cushman.", sort_order: 1 },
+      { id: "f1", event_id: "e1", question: "When?", answer: "Sunday, from 9:30 AM to 5:30 PM at Cushman.", sort_order: 1 },
       { id: "f2", event_id: "e1", question: "Prizes?", answer: "Cash prize pool.", sort_order: 2 },
     ];
     const out = withCurrentFaqTimes(faqs);
-    expect(out[0].answer).toBe("Sunday, from 9:30 AM to 5:30 PM at Cushman.");
+    expect(out[0].answer).toBe("Sunday, from 9:00 AM to 5:30 PM at Cushman.");
     expect(out[1]).toEqual(faqs[1]);
   });
 

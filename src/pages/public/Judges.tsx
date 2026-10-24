@@ -41,10 +41,10 @@ const Judges = () => {
           <span className="animate-blink text-signal">_</span>
         </h1>
         <p className="text-lg text-dim">
-          These are the people judging projects at Impact Miami 2.0. More judges and our mentors are being announced as they're confirmed.
+          Meet the panel judging projects at Impact Miami 2.0. Our mentors are being announced as they're confirmed.
         </p>
         <Badge tone="signal">
-          <Led pulse className="h-1.5 w-1.5" /> {JUDGES.length} of {JUDGE_SEATS} judges confirmed
+          <Led pulse className="h-1.5 w-1.5" /> {JUDGES.length >= JUDGE_SEATS ? "Judging panel confirmed" : `${JUDGES.length} of ${JUDGE_SEATS} judges confirmed`}
         </Badge>
       </div>
 
@@ -52,20 +52,23 @@ const Judges = () => {
         <p className="kicker mb-4">Judges</p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {JUDGES.map((j) => (
-            <div key={j.name} className="signal-border flex items-center gap-4 rounded-2xl p-5">
-              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-signal-diag font-display text-lg font-extrabold text-void">
-                {initials(j.name)}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="font-display text-lg font-bold leading-tight text-ink">{j.name}</p>
-                <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-signal">{j.title ?? "Judge"}</p>
+            <article key={j.name} className="signal-border flex flex-col rounded-2xl p-5">
+              <div className="flex items-center gap-4">
+                <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-signal-diag font-display text-lg font-extrabold text-void">
+                  {initials(j.name)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-display text-lg font-bold leading-tight text-ink">{j.name}</p>
+                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.14em] text-signal">{j.title ?? "Judge"}</p>
+                </div>
+                {j.linkedin && (
+                  <a href={j.linkedin} target="_blank" rel="noreferrer" aria-label={`${j.name} on LinkedIn`} className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-line text-dim hover:border-signal hover:text-signal">
+                    <Linkedin className="h-4 w-4" />
+                  </a>
+                )}
               </div>
-              {j.linkedin && (
-                <a href={j.linkedin} target="_blank" rel="noreferrer" aria-label={`${j.name} on LinkedIn`} className="text-dim hover:text-signal">
-                  <Linkedin className="h-5 w-5" />
-                </a>
-              )}
-            </div>
+              {j.bio && <p className="mt-4 text-sm leading-relaxed text-dim">{j.bio}</p>}
+            </article>
           ))}
           {Array.from({ length: Math.max(0, JUDGE_SEATS - JUDGES.length) }, (_, i) => (
             <TbaCard key={i} role="Judge" />

@@ -8,6 +8,7 @@ import Register from "@/pages/public/Register";
 import Judges from "@/pages/public/Judges";
 import Rubric from "@/pages/public/Rubric";
 import Submit from "@/pages/public/Submit";
+import Timer from "@/pages/public/Timer";
 import NotFound from "@/pages/public/NotFound";
 
 // The operator console is its own bundle; public visitors never download it.
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/submit" element={<Submit />} />
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="/timer" element={<Timer />} />
           <Route path="/ops" element={<OpsLayout />}>
             <Route index element={<Navigate to="teams" replace />} />
             <Route path="teams" element={<OpsTeams />} />

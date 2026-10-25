@@ -6,8 +6,10 @@ import { EventFacts } from "@/components/site/EventFacts";
 import { HeroDisplay } from "@/components/site/HeroDisplay";
 import { ScheduleTimeline } from "@/components/site/ScheduleTimeline";
 import { PastHackathons } from "@/components/site/PastHackathons";
+import { PitchTimer, useNow } from "@/components/site/PitchTimer";
 import { TracksSection } from "@/components/site/TracksSection";
 import { useAnnouncements, useEvent, useFaqs, useSchedule, useTracks } from "@/lib/api";
+import { isEventDay, pitchDeadline } from "@/lib/deadline";
 import { formatDateTime, formatEventDate, formatTimeRange, registrationLabel } from "@/lib/format";
 import { PARTNERS } from "@/lib/partners";
 import { cn } from "@/lib/utils";
@@ -32,8 +34,10 @@ const Home = () => {
   const { data: schedule } = useSchedule();
   const { data: faqs } = useFaqs();
   const { data: announcements } = useAnnouncements();
+  const now = useNow(60_000);
 
   if (!event) return null;
+  const eventDay = isEventDay(event.starts_at, event.ends_at, now);
 
   const status = event.registration_status;
   const calendarUrl = googleCalendarUrl(
@@ -46,6 +50,13 @@ const Home = () => {
 
   return (
     <main>
+      {/* ------------------------------------------------- Event-day pitch timer */}
+      {eventDay && (
+        <section className="container pt-8 sm:pt-10">
+          <PitchTimer deadline={pitchDeadline(schedule)} startsAt={event.starts_at} timezone={event.timezone} />
+        </section>
+      )}
+
       {/* ---------------------------------------------------------------- Hero */}
       <section className="container pb-16 pt-10 sm:pb-24 sm:pt-14">
         <div className="grid items-center gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
@@ -86,7 +97,7 @@ const Home = () => {
               )}
             </div>
 
-            <Countdown target={event.starts_at} className="mt-12" />
+            {!eventDay && <Countdown target={event.starts_at} className="mt-12" />}
           </div>
 
           <HeroDisplay event={event} />
